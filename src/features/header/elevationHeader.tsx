@@ -16,10 +16,14 @@ import { makeStyles } from "@mui/styles";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Link as RouteLink } from "react-router-dom";
-import DionysLogo from "./images/DionysLogo10.png";
-import SearchBar from "../../features/header/searchBar";
+import { Link as RouteLink, useNavigate } from "react-router-dom";
+import DionysLogo from "../../app/layouts/images/DionysLogo10.png";
+import SearchBar from "./searchBar";
 import { cloneElement, Fragment } from "react";
+import { useAppSelector } from "../../app/hooks";
+import AccountArea from "./accountArea";
+
+const queryString = require("query-string");
 
 const useStyles = makeStyles({
   root: {
@@ -67,7 +71,7 @@ function ElevationScroll(props: ScrollProps) {
 
 function Header(props: HeaderProps) {
   const classes = useStyles();
-  const user = null;
+  const navigate = useNavigate();
   return (
     <Fragment>
       <CssBaseline />
@@ -95,66 +99,7 @@ function Header(props: HeaderProps) {
                   </Badge>
                 </IconButton>
 
-                {user ? (
-                  <Fragment>
-                    <IconButton
-                      size="large"
-                      edge="end"
-                      aria-label="account of current user"
-                      aria-haspopup="true"
-                      color="inherit"
-                    >
-                      <AccountCircle />
-                    </IconButton>
-
-                    <RouteLink
-                      to={"/user"}
-                      style={{
-                        textDecoration: "none",
-                        color: "inherit",
-                        marginLeft: 5,
-                      }}
-                    >
-                      <Typography color="inherit">vinhvinh07</Typography>
-                    </RouteLink>
-                  </Fragment>
-                ) : (
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    divider={
-                      <Divider
-                        orientation="vertical"
-                        flexItem
-                        variant="fullWidth"
-                        color="inherit"
-                      />
-                    }
-                    sx={{
-                      marginLeft: 1,
-                    }}
-                  >
-                    <RouteLink
-                      to={"/register"}
-                      style={{
-                        textDecoration: "none",
-                        color: "inherit",
-                      }}
-                    >
-                      <Typography color="inherit">Đăng ký</Typography>
-                    </RouteLink>
-
-                    <RouteLink
-                      to={"/login"}
-                      style={{
-                        textDecoration: "none",
-                        color: "inherit",
-                      }}
-                    >
-                      <Typography color="inherit">Đăng nhập</Typography>
-                    </RouteLink>
-                  </Stack>
-                )}
+                <AccountArea />
               </Toolbar>
               <Toolbar>
                 <Grid container sx={{ flexGrow: 1 }}>
@@ -174,6 +119,9 @@ function Header(props: HeaderProps) {
                 <IconButton
                   color="inherit"
                   style={{ marginLeft: 40, marginRight: 4 }}
+                  onClick={() => {
+                    navigate("/cart");
+                  }}
                 >
                   <Badge badgeContent={17} color="error">
                     <ShoppingCartIcon fontSize="large" />

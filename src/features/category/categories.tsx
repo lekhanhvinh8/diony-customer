@@ -1,20 +1,20 @@
 import { Box, Grid } from "@mui/material";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
-import { cateRouteParams } from "../../app/layouts/App";
+import { cateIdRouteParams } from "../../app/layouts/App";
 import {
   getChildrenOfCateId,
   getPath,
 } from "../../app/store/entities/categories";
 import CategoriesPath from "./categoriesPath";
-import ProductSideBar from "../ProductSideBar/productSideBar";
-import ElevationHeader from "../../app/layouts/elevationHeader";
+import ElevationHeader from "../header/elevationHeader";
+import ProductFilter from "../productFilter/productFilter";
 
 export interface CategoriesProps {}
 
 export default function Categories(props: CategoriesProps) {
-  const { [cateRouteParams]: cateId } = useParams();
-  const children = useAppSelector(getChildrenOfCateId(Number(cateId)));
+  const { [cateIdRouteParams]: cateId } = useParams();
+  const categoryChildren = useAppSelector(getChildrenOfCateId(Number(cateId)));
   const path = useAppSelector(getPath(Number(cateId)));
 
   const products = [...Array(100)];
@@ -22,7 +22,7 @@ export default function Categories(props: CategoriesProps) {
   return (
     <Box>
       <ElevationHeader disableElevation />
-      {!children ? (
+      {!categoryChildren ? (
         <Outlet />
       ) : (
         <Box
@@ -36,24 +36,10 @@ export default function Categories(props: CategoriesProps) {
               {path && <CategoriesPath path={path} />}
             </Box>
             <Box sx={{ marginTop: 2 }}>
-              <Grid container spacing={1}>
-                <Grid item xs={2}>
-                  <Box sx={{ padding: 2, bgcolor: "#ffffff" }}>
-                    <ProductSideBar categories={children} />
-                  </Box>
-                </Grid>
-                <Grid item xs={10}>
-                  <Box sx={{ padding: 2, bgcolor: "#ffffff" }}>
-                    <Box sx={{ marginTop: 2 }}>
-                      {products.map((p, index) => (
-                        <div key={index}>
-                          <Link to="/">ABC</Link>
-                        </div>
-                      ))}
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
+              <ProductFilter
+                categories={categoryChildren}
+                products={products}
+              />
             </Box>
           </Box>
         </Box>

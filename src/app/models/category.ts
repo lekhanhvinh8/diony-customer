@@ -7,5 +7,6 @@ export interface Category {
   status: boolean;
   isDisabled: boolean;
   fatherId: number | null;
+  imageUrl: string | null;
   children: Array<Category>;
 }

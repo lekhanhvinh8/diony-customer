@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Outlet } from "react-router-dom";
-import ElevationHeader from "./elevationHeader";
+import ElevationHeader from "../../features/header/elevationHeader";
 
 export interface MainProps {}
 

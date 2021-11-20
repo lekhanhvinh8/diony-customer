@@ -1,27 +1,29 @@
-import React from "react";
-// import { Route, Redirect } from "react-router-dom";
-import { Route } from "react-router-dom";
-import auth from "../../services/authService";
+import React, { ReactElement } from "react";
+import { Route, Navigate, useLocation, Outlet } from "react-router-dom";
+import auth, {
+  DecodeUser,
+  roleCustomer,
+  roleSeller,
+} from "../../services/authService";
 
-interface Props {
-  path: string;
-  [key: string]: any;
-}
+interface Props {}
 
-const ProtectedRoute: React.FC<Props> = ({ path, ...rest }) => {
+const checkUserValid = (user: DecodeUser | null) => {
+  if (user === null) return false;
+
+  if (user.role !== roleCustomer && user.role !== roleSeller) return false;
+
+  return true;
+};
+
+const ProtectedRoute: React.FC<Props> = () => {
+  let location = useLocation();
   const user = auth.getCurrentUser();
-  return <Route path={path} {...rest} />;
-
-  // if (user) return <Route path={path} {...rest} />;
-  // return (
-  //   <Route
-  //     render={(props) => (
-  //       <Redirect
-  //         to={{ pathname: "/login", state: { from: props.location } }}
-  //       />
-  //     )}
-  //   />
-  // );
+  return checkUserValid(user) ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" replace state={{ from: location }} />
+  );
 };
 
 export default ProtectedRoute;

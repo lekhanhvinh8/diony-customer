@@ -16,6 +16,8 @@ export interface FormState {
 
 const handleInputChange =
   (
+    syncWithNames: Array<string>,
+    allData: FormState["data"],
     errors: FormState["errors"],
     setData: SetStateAction<any>,
     setErrors: SetStateAction<any>,
@@ -25,7 +27,12 @@ const handleInputChange =
     const updateErrors = { ...errors };
     const { currentTarget } = e;
 
-    const errorMessage = validateProp(currentTarget, schemaMap);
+    const errorMessage = validateProp(
+      syncWithNames,
+      allData,
+      currentTarget,
+      schemaMap
+    );
 
     if (errorMessage) updateErrors[currentTarget.name] = errorMessage;
     else delete updateErrors[currentTarget.name];
@@ -36,13 +43,22 @@ const handleInputChange =
   };
 
 const validateProp = (
+  syncWithNames: Array<string>,
+  allData: FormState["data"],
   input: HTMLInputElement,
   schemaMap: FormState["schemaMap"]
 ) => {
-  const obj = { [input.name]: input.value };
-  const propSchema = Joi.object().keys({ [input.name]: schemaMap[input.name] });
+  const datas = { [input.name]: input.value };
+  const propSchemaMap = { [input.name]: schemaMap[input.name] };
 
-  const result = propSchema.validate(obj);
+  for (const name of syncWithNames) {
+    datas[name] = allData[name];
+    propSchemaMap[name] = schemaMap[name];
+  }
+
+  const propSchema = Joi.object().keys(propSchemaMap);
+
+  const result = propSchema.validate(datas);
 
   return result.error ? result.error.details[0].message : null;
 };
@@ -84,11 +100,13 @@ export const renderInput = (
   name: string,
   label: string,
   data: any,
+  allData: FormState["errors"],
   errors: FormState["errors"],
   setData: SetStateAction<any>,
   setErrors: SetStateAction<any>,
   schemaMap: FormState["schemaMap"],
   { ...props } = {},
+  syncWithNames: Array<string> = [],
   type = "text"
 ) => {
   return (
@@ -98,7 +116,16 @@ export const renderInput = (
       value={data}
       type={type}
       errorMessage={errors[name]}
-      onInputChange={handleInputChange(errors, setData, setErrors, schemaMap)}
+      onInputChange={(e) => {
+        handleInputChange(
+          syncWithNames,
+          allData,
+          errors,
+          setData,
+          setErrors,
+          schemaMap
+        )(e);
+      }}
       {...props}
     />
   );

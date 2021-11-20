@@ -1,5 +1,5 @@
 import { Divider, Stack, Box } from "@mui/material";
-import { Category } from "../../app/models/category";
+import { Category } from "../../../app/models/category";
 import SideBarCategories from "./sideBarCategories";
 
 export interface CategorySideBarProps {
@@ -8,7 +8,7 @@ export interface CategorySideBarProps {
 
 const ProductSideBar = ({ categories }: CategorySideBarProps) => {
   return (
-    <Box sx={{}}>
+    <Box>
       <Stack divider={<Divider flexItem />} spacing={2}>
         {categories && categories.length !== 0 && (
           <SideBarCategories categories={categories} />

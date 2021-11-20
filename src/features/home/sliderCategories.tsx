@@ -12,6 +12,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import { red } from "@mui/material/colors";
+import defaultCategoryImage from "../../app/layouts/images/defaultCategoryImage.png";
 
 const desktopScreenWidth = window.screen.availWidth;
 const scrollBarWidth = 17;
@@ -88,8 +89,11 @@ export default function SliderCategories(props: SliderCategoriesProps) {
                 <CardMedia
                   component="img"
                   height={itemWidth - paddingRight}
-                  image="https://res.cloudinary.com/docbzd7l8/image/upload/v1625037327/pzjs3gwt4wizomq0fffe.jpg"
-                  alt="green iguana"
+                  image={
+                    category1.imageUrl
+                      ? category1.imageUrl
+                      : defaultCategoryImage
+                  }
                 />
                 <CardContent>
                   <Typography sx={{ marginTop: 1 }} height={50} align="center">
@@ -114,8 +118,11 @@ export default function SliderCategories(props: SliderCategoriesProps) {
                   <CardMedia
                     component="img"
                     height={itemWidth - paddingRight}
-                    image="https://res.cloudinary.com/docbzd7l8/image/upload/v1625037327/pzjs3gwt4wizomq0fffe.jpg"
-                    alt="green iguana"
+                    image={
+                      category2.imageUrl
+                        ? category2.imageUrl
+                        : defaultCategoryImage
+                    }
                   />
                   <CardContent>
                     <Typography

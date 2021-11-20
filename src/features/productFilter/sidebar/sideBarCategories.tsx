@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Category } from "../../app/models/category";
+import { Category } from "../../../app/models/category";
 
 export interface SideBarCategoriesProps {
   categories: Array<Category>;
