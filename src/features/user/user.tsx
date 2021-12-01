@@ -3,6 +3,7 @@ import * as React from "react";
 import { Outlet } from "react-router-dom";
 import ElevationScrollHeader from "../header/elevationHeader";
 import Sidebar from "./sidebar";
+import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 
 export interface UserProps {}
 
@@ -16,7 +17,7 @@ export default function User(props: UserProps) {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        sx={{ bgcolor: "#f7f5f5" }}
+        sx={{ bgcolor: darkBackgroundColor }}
       >
         <Box sx={{ width: "90%" }}>
           <Grid container spacing={1}>

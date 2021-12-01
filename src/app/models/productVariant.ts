@@ -10,6 +10,7 @@ export interface ProductVariantValue {
 }
 
 export interface VariantValueInfo {
+  id: number;
   firstValueId: number;
   secondValueId: number | null;
   price: number;

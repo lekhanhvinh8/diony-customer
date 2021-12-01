@@ -26,7 +26,7 @@ export default function ProductTitle(props: ProductTitleProps) {
               justifyContent="center"
               sx={{ height: "100%" }}
             >
-              <Rating name="read-only" value={product.startRate} readOnly />
+              <Rating name="read-only" value={product.starRate} readOnly />
             </Box>
           </Link>
           <Link

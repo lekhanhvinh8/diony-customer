@@ -8,10 +8,10 @@ export interface AddressDialogProps {}
 export default function AddressDialog(props: AddressDialogProps) {
   const dispatch = useAppDispatch();
   const dialogOpen = useAppSelector(
-    (state) => state.ui.userPage.address.dialogOpen
+    (state) => state.ui.userPage.addressPage.dialogOpen
   );
   const updatedAddressId = useAppSelector(
-    (state) => state.ui.userPage.address.updatedAddressId
+    (state) => state.ui.userPage.addressPage.updatedAddressId
   );
 
   return (

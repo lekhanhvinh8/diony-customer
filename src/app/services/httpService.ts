@@ -17,7 +17,7 @@ axios.interceptors.response.use(
 );
 
 export function setJwtHeader(jwt: string) {
-  axios.defaults.headers.common["x-auth-token"] = jwt;
+  axios.defaults.headers.common["Authorization"] = "bearer " + jwt;
 }
 
 const http = {

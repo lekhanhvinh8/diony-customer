@@ -14,7 +14,7 @@ export interface FormState {
   };
 }
 
-const handleInputChange =
+export const handleInputChange =
   (
     syncWithNames: Array<string>,
     allData: FormState["data"],
@@ -42,7 +42,34 @@ const handleInputChange =
     setErrors(updateErrors);
   };
 
-const validateProp = (
+export const handleInputChangeFormik =
+  (
+    syncWithNames: Array<string>,
+    allData: FormState["data"],
+    handleDataChange: Function,
+    errors: FormState["errors"],
+    setErrors: SetStateAction<any>,
+    schemaMap: FormState["schemaMap"]
+  ) =>
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updateErrors = { ...errors };
+    const { currentTarget } = e;
+
+    const errorMessage = validateProp(
+      syncWithNames,
+      allData,
+      currentTarget,
+      schemaMap
+    );
+
+    if (errorMessage) updateErrors[currentTarget.name] = errorMessage;
+    else delete updateErrors[currentTarget.name];
+
+    handleDataChange(e);
+    setErrors(updateErrors);
+  };
+
+export const validateProp = (
   syncWithNames: Array<string>,
   allData: FormState["data"],
   input: HTMLInputElement,

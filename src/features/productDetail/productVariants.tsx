@@ -39,10 +39,10 @@ export default function ProductVariants(props: ProductVariantsProps) {
               </Box>
             </Grid>
             <Grid item xs={10}>
-              <Grid container spacing={1}>
+              <Grid container spacing={2}>
                 {variant.values.map((value) => {
                   return (
-                    <Grid item key={value.id} xs={2}>
+                    <Grid item key={value.id}>
                       <Button
                         variant="outlined"
                         sx={{ width: "100%" }}

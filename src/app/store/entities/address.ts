@@ -1,32 +1,140 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Province } from "../../models/address/province";
-import { getProvinces } from "../../services/addressService";
-import { AppThunk } from "../store";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import { Address } from "../../models/address/address";
+
+import {
+  AddressRequestData,
+  deleteAddress,
+  getAddresses,
+  addAddress as addAddressService,
+  updateAddress as updateAddressService,
+  setDefaultAddress as setDefaultAddressService,
+} from "../../services/userService";
+
+import { AppThunk, RootState } from "../store";
 
 export interface AddressStore {
-  provinces: Array<Province>;
+  addresses: Array<Address>;
 }
 
 const initialState: AddressStore = {
-  provinces: [],
+  addresses: [],
 };
 
 const slice = createSlice({
   name: "address",
   initialState,
   reducers: {
-    provincesLoadded: (address, action: PayloadAction<Array<Province>>) => {
-      address.provinces = action.payload;
+    addressesLoadded: (address, action: PayloadAction<Array<Address>>) => {
+      address.addresses = action.payload;
+    },
+    addressAdded: (address, action: PayloadAction<Address>) => {
+      address.addresses.push(action.payload);
+    },
+    addressUpdated: (address, action: PayloadAction<Address>) => {
+      const updatedAddress = action.payload;
+      const index = address.addresses.findIndex(
+        (a) => a.id === updatedAddress.id
+      );
+
+      if (index !== -1) {
+        address.addresses[index] = updatedAddress;
+      }
+    },
+    addressRemoved: (address, action: PayloadAction<number>) => {
+      const addressId = action.payload;
+      const index = address.addresses.findIndex((a) => a.id === addressId);
+      if (index !== -1) {
+        address.addresses.splice(index, 1);
+      }
+    },
+    defaultAddressSet: (address, action: PayloadAction<number>) => {
+      const addressId = action.payload;
+      const index = address.addresses.findIndex((a) => a.id === addressId);
+      if (index !== -1) {
+        for (let i = 0; i < address.addresses.length; i++) {
+          if (i === index) address.addresses[i].isDefault = true;
+          else address.addresses[i].isDefault = false;
+        }
+      }
     },
   },
 });
 
 export default slice.reducer;
 
-const { provincesLoadded } = slice.actions;
+const {
+  addressesLoadded,
+  addressAdded,
+  addressRemoved,
+  defaultAddressSet,
+  addressUpdated,
+} = slice.actions;
+
+//selectors
+export const getDefaultAddress = createSelector(
+  (state: RootState) => state.entities.address,
+  (address) => {
+    const defaultAddresses = address.addresses.filter((adr) => adr.isDefault);
+
+    if (defaultAddresses.length >= 1) return defaultAddresses[0];
+
+    return null;
+  }
+);
 
 //action creators
-export const loadProvinces: AppThunk = async (dispatch) => {
-  const provinces = await getProvinces();
-  dispatch(provincesLoadded(provinces));
-};
+
+export const loadAddresses =
+  (userId: string | null): AppThunk =>
+  async (dispatch, getState) => {
+    if (!userId) return;
+
+    const addresses = await getAddresses(userId);
+    dispatch(addressesLoadded(addresses));
+  };
+
+export const addAddress =
+  (address: AddressRequestData, userId: string): AppThunk =>
+  async (dispatch) => {
+    try {
+      const newAddress = await addAddressService(address, userId);
+      dispatch(addressAdded(newAddress));
+      toast.success("Thêm thành công");
+    } catch (error) {
+      toast.error("Thêm thất bại");
+    }
+  };
+
+export const updateAddress =
+  (address: AddressRequestData): AppThunk =>
+  async (dispatch) => {
+    try {
+      const updatedAddress = await updateAddressService(address);
+      dispatch(addressUpdated(updatedAddress));
+      toast.success("Cập nhật thành công");
+    } catch (ex) {
+      toast.error("Cập nhật thất bại");
+    }
+  };
+
+export const removeAddress =
+  (addressId: number): AppThunk =>
+  async (dispatch) => {
+    try {
+      await deleteAddress(addressId);
+      dispatch(addressRemoved(addressId));
+      toast.success("Xóa thành công");
+    } catch (ex) {
+      toast.error("Xóa không thành công");
+    }
+  };
+
+export const setDefaultAddress =
+  (addressId: number): AppThunk =>
+  async (dispatch) => {
+    try {
+      await setDefaultAddressService(addressId);
+      dispatch(defaultAddressSet(addressId));
+    } catch (ex) {}
+  };

@@ -80,6 +80,8 @@ export default function Login(props: LoginProps) {
         newErrors[emailAddressField] = ex.response.message;
         setErrors(newErrors);
       }
+
+      setSubmitLoadding(false);
     }
   };
 

@@ -1,14 +1,31 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ProductDetail } from "../../models/productDetail";
 import { AppThunk, RootState } from "../store";
+import {
+  getProductDetail as getProductDetailService,
+  getProductProperties,
+} from "./../../services/productService";
 
 export interface SelectedVariantValue {
   variantId: number;
   variantValueId: number;
 }
 
+export interface ProductSelectProperty {
+  propertyId: number;
+  propertyName: string;
+  values: Array<String>;
+}
+export interface ProductTypingProperty {
+  propertyId: number;
+  propertyName: string;
+  value: string;
+}
+
 export interface ProductDetailPage {
   productDetail: ProductDetail;
+  productSelectProperties: Array<ProductSelectProperty>;
+  productTypingProperties: Array<ProductTypingProperty>;
   selectedVariantValues: Array<SelectedVariantValue>;
   productPrice: number | null;
   productQuantity: number | null;
@@ -20,106 +37,24 @@ const initialState: ProductDetailPage = {
   productPrice: null,
   productQuantity: null,
   selectedQuantity: 0,
-  selectedImageUrl: "abc",
-  selectedVariantValues: [
-    {
-      variantId: 1,
-      variantValueId: 1,
-    },
-    {
-      variantId: 2,
-      variantValueId: 3,
-    },
-  ],
+  selectedImageUrl: "",
+  selectedVariantValues: [],
+  productSelectProperties: [],
+  productTypingProperties: [],
   productDetail: {
-    id: 1,
-    name: "Giày bóng chuyền cổ cao Beyono Golden Star C - Black White",
+    id: 0,
+    name: "",
     description: "",
-    categoryId: 67,
-    avatarUrl:
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1625037327/pzjs3gwt4wizomq0fffe.jpg",
-    imageUrls: [
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1625580372/vzgkusph3chxdup28zc1.jpg",
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1624963553/fhlxtumco6drmpgcdla0.jpg",
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1624955809/mdaqbqaqc00bjsg1hrap.jpg",
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1624502357/f5amo9bhhm667iz8mzde.jpg",
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1622948811/znbwpwetbuegpcmx89dt.jpg",
-    ],
+    categoryId: 0,
+    avatarUrl: "",
+    imageUrls: [],
     price: null,
     quantity: null,
-    startRate: 4.5,
-    numRates: 35,
-    quantitySold: 20,
-    variants: [
-      {
-        id: 1,
-        name: "Chọn loại",
-        values: [
-          { id: 1, name: "Black" },
-          { id: 2, name: "White" },
-        ],
-      },
-      {
-        id: 2,
-        name: "Kích thước",
-        values: [
-          { id: 3, name: "39" },
-          { id: 4, name: "40" },
-          { id: 5, name: "41" },
-          { id: 6, name: "42" },
-        ],
-      },
-    ],
-    variantValueInfos: [
-      {
-        firstValueId: 1,
-        secondValueId: 3,
-        price: 130000,
-        quantity: 0,
-      },
-      {
-        firstValueId: 1,
-        secondValueId: 4,
-        price: 140000,
-        quantity: 14,
-      },
-      {
-        firstValueId: 1,
-        secondValueId: 5,
-        price: 150000,
-        quantity: 15,
-      },
-      {
-        firstValueId: 1,
-        secondValueId: 6,
-        price: 160000,
-        quantity: 16,
-      },
-      {
-        firstValueId: 2,
-        secondValueId: 3,
-        price: 230000,
-        quantity: 23,
-      },
-      {
-        firstValueId: 2,
-        secondValueId: 4,
-        price: 240000,
-        quantity: 24,
-      },
-      {
-        firstValueId: 2,
-        secondValueId: 5,
-        price: 250000,
-        quantity: 25,
-      },
-      {
-        firstValueId: 2,
-        secondValueId: 6,
-        price: 260000,
-        quantity: 26,
-      },
-    ],
+    starRate: 1,
+    numRates: 0,
+    quantitySold: 0,
+    variants: [],
+    variantValueInfos: [],
   },
 };
 
@@ -127,8 +62,34 @@ const slice = createSlice({
   name: "productDetailPage",
   initialState: initialState,
   reducers: {
-    productReloaded: (page, action) => {
+    productReloaded: (page, action: PayloadAction<ProductDetail>) => {
       page.productDetail = action.payload;
+    },
+    pageReloaded: (page, action: PayloadAction<ProductDetail>) => {
+      const product = action.payload;
+
+      page.productDetail = product;
+      page.selectedImageUrl = product.avatarUrl;
+      page.selectedQuantity = 0;
+      page.productPrice = null;
+      page.productQuantity = null;
+      page.selectedVariantValues = product.variants.map((variant) => {
+        const selectedValue: SelectedVariantValue = {
+          variantId: variant.id,
+          variantValueId: variant.values[0].id,
+        };
+        return selectedValue;
+      });
+    },
+    propertiesReloadded: (
+      page,
+      action: PayloadAction<{
+        selectProperties: Array<ProductSelectProperty>;
+        typingProperties: Array<ProductTypingProperty>;
+      }>
+    ) => {
+      page.productSelectProperties = action.payload.selectProperties;
+      page.productTypingProperties = action.payload.typingProperties;
     },
     variantValueSelected: (
       page,
@@ -165,6 +126,9 @@ const slice = createSlice({
 export default slice.reducer;
 
 const {
+  productReloaded,
+  pageReloaded,
+  propertiesReloadded,
   variantValueSelected,
   priceAndQuantityCalculated,
   selectedQuantitySet,
@@ -184,7 +148,52 @@ export const getPriceAndQuantity = createSelector(
   }
 );
 
+export const getCombinationId = createSelector(
+  (state: RootState) => state.ui.productDetailPage,
+  (page) => {
+    const combinations = page.productDetail.variantValueInfos;
+    const selectedVariantValueIds = page.selectedVariantValues.map(
+      (v) => v.variantValueId
+    );
+
+    if (combinations.length === 0) return null;
+
+    for (const combination of combinations) {
+      if (selectedVariantValueIds.includes(combination.firstValueId)) {
+        if (combination.secondValueId) {
+          if (selectedVariantValueIds.includes(combination.secondValueId)) {
+            return combination.id;
+          }
+        } else {
+          return combination.id;
+        }
+      }
+    }
+
+    return null;
+  }
+);
+
 //action creators
+export const reloadProductDetailPage =
+  (productId: number): AppThunk =>
+  async (dispatch, getState) => {
+    const product = await getProductDetailService(productId);
+    dispatch(pageReloaded(product));
+    await dispatch(calculatePriceAndQuantity);
+    await dispatch(resetSelectedQuantity);
+  };
+
+export const reloadProperties =
+  (productId: number): AppThunk =>
+  async (dispatch) => {
+    const { selectProperties, typingProperties } = await getProductProperties(
+      productId
+    );
+
+    dispatch(propertiesReloadded({ selectProperties, typingProperties }));
+  };
+
 export const selectVariantValue =
   (variantId: number, valueId: number): AppThunk =>
   (dispatch) => {
@@ -211,9 +220,9 @@ export const calculatePriceAndQuantity: AppThunk = (dispatch, getState) => {
 
     return;
   }
-
   for (const priceAndQuantityInfo of variantValueInfos) {
     const selectedValueIds = selectedVariantValues.map((s) => s.variantValueId);
+
     if (selectedValueIds.includes(priceAndQuantityInfo.firstValueId)) {
       if (priceAndQuantityInfo.secondValueId === null) {
         price = priceAndQuantityInfo.price;

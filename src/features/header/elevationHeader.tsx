@@ -22,6 +22,7 @@ import SearchBar from "./searchBar";
 import { cloneElement, Fragment } from "react";
 import { useAppSelector } from "../../app/hooks";
 import AccountArea from "./accountArea";
+import { getNumberOfCartItems } from "../../app/store/entities/cart";
 
 const queryString = require("query-string");
 
@@ -72,6 +73,8 @@ function ElevationScroll(props: ScrollProps) {
 function Header(props: HeaderProps) {
   const classes = useStyles();
   const navigate = useNavigate();
+  const numberOfCartItems = useAppSelector(getNumberOfCartItems);
+
   return (
     <Fragment>
       <CssBaseline />
@@ -123,7 +126,7 @@ function Header(props: HeaderProps) {
                     navigate("/cart");
                   }}
                 >
-                  <Badge badgeContent={17} color="error">
+                  <Badge badgeContent={numberOfCartItems} color="error">
                     <ShoppingCartIcon fontSize="large" />
                   </Badge>
                 </IconButton>

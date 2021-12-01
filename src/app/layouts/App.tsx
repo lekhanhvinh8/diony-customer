@@ -1,7 +1,7 @@
 import { Fragment, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Categories from "../../features/category/categories";
-import { useAppDispatch } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { loadCategories } from "../store/entities/categories";
 import Home from "../../features/home/home";
 import NotFound from "./notfount";
@@ -19,21 +19,37 @@ import Account from "../../features/user/account/account";
 import Purchase from "../../features/user/purchase/purchase";
 import Profile from "../../features/user/account/profile";
 import Address from "../../features/user/account/address";
+import Checkout from "../../features/checkout/checkout";
+import { initializePage } from "../store/ui/cart";
+import { loadCart } from "../store/entities/cart";
+import { getUserId } from "../services/authService";
 
 export const cateIdRouteParams = "cateId";
 export const productIdRouteParams = "productId";
 
 function App() {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.decodeUser);
 
   useEffect(() => {
     const asyncFunc = async () => {
-      dispatch(setUser);
-      await dispatch(loadCategories());
+      await dispatch(setUser);
+      dispatch(loadCategories());
     };
 
     asyncFunc();
   }, [dispatch]);
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      if (user) {
+        await dispatch(loadCart());
+        await dispatch(initializePage); //temp, will delete soon
+      }
+    };
+
+    asyncFunc();
+  }, [user, dispatch]);
 
   return (
     <Fragment>
@@ -50,6 +66,9 @@ function App() {
         />
         <Route path="/cart" element={<ProtectedRoute />}>
           <Route path="" element={<Cart />} />
+        </Route>
+        <Route path="/checkout" element={<ProtectedRoute />}>
+          <Route path="" element={<Checkout />} />
         </Route>
         <Route path="/user/*" element={<ProtectedRoute />}>
           <Route path="*" element={<User />}>

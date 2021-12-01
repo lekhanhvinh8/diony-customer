@@ -1,4 +1,3 @@
-import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material";
 import {
   Box,
   Collapse,
@@ -9,6 +8,9 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import HomeIcon from "@mui/icons-material/Home";
+import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 
 export interface SidebarProps {}
 
@@ -19,17 +21,17 @@ export default function Sidebar(props: SidebarProps) {
   const listItems = [
     {
       label: "Hồ sơ",
-      icon: <StarBorder />,
+      icon: <AccountBoxIcon />,
       linkTo: "/user/account/profile",
     },
     {
       label: "Địa chỉ",
-      icon: <StarBorder />,
+      icon: <HomeIcon />,
       linkTo: "/user/account/address",
     },
     {
       label: "Đơn mua",
-      icon: <StarBorder />,
+      icon: <TextSnippetIcon />,
       linkTo: "/user/purchase",
     },
   ];

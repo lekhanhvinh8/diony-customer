@@ -18,7 +18,7 @@ import { useAppSelector } from "../../../app/hooks";
 export interface ProfileProps {}
 
 export default function Profile(props: ProfileProps) {
-  const user = useAppSelector((state) => state.user.decodeUser);
+  const profilePage = useAppSelector((state) => state.ui.userPage.profilePage);
 
   const leftColumnFormGrid = 3;
   const rightColumnFormGrid = 9;
@@ -43,7 +43,7 @@ export default function Profile(props: ProfileProps) {
                   </Box>
                 </Grid>
                 <Grid item xs={rightColumnFormGrid}>
-                  <TextField size="small" fullWidth />
+                  <TextField size="small" fullWidth value={profilePage.name} />
                 </Grid>
 
                 <Grid item xs={leftColumnFormGrid} display="flex">
@@ -57,7 +57,11 @@ export default function Profile(props: ProfileProps) {
                   </Box>
                 </Grid>
                 <Grid item xs={rightColumnFormGrid}>
-                  <TextField size="small" fullWidth />
+                  <TextField
+                    size="small"
+                    fullWidth
+                    value={profilePage.shopName}
+                  />
                 </Grid>
 
                 <Grid item xs={leftColumnFormGrid} display="flex">
@@ -73,23 +77,18 @@ export default function Profile(props: ProfileProps) {
                 <Grid item xs={rightColumnFormGrid}>
                   <RadioGroup
                     row
-                    defaultValue="female"
+                    defaultValue={profilePage.isMale}
                     name="radio-buttons-group"
                   >
                     <FormControlLabel
-                      value="female"
+                      value={false}
                       control={<Radio />}
                       label="Nữ"
                     />
                     <FormControlLabel
-                      value="male"
+                      value={true}
                       control={<Radio />}
                       label="Nam"
-                    />
-                    <FormControlLabel
-                      value="other"
-                      control={<Radio disabled />}
-                      label="we dont support 3rd sex"
                     />
                   </RadioGroup>
                 </Grid>
@@ -105,7 +104,7 @@ export default function Profile(props: ProfileProps) {
                   </Box>
                 </Grid>
                 <Grid item xs={rightColumnFormGrid}>
-                  dotkivh@gmail.com
+                  {profilePage.email ? profilePage.email : "Chưa có email"}
                   <Button
                     variant="outlined"
                     size="small"
@@ -126,7 +125,9 @@ export default function Profile(props: ProfileProps) {
                   </Box>
                 </Grid>
                 <Grid item xs={rightColumnFormGrid}>
-                  0789672050
+                  {profilePage.phoneNumber
+                    ? profilePage.phoneNumber
+                    : "Chưa có số điện thoại"}
                   <Button
                     variant="outlined"
                     size="small"

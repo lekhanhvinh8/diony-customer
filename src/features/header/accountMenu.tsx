@@ -57,7 +57,7 @@ export default function AccountMenu({
           <PersonOutlineIcon />
         </ListItemIcon>
         <Link
-          to="/user/account"
+          to="/user/account/profile"
           style={{
             textDecoration: "none",
             color: "inherit",

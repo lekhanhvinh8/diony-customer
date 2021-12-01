@@ -29,7 +29,7 @@ export default function ProductArea({ products }: ProductAreaProps) {
   return (
     <Box>
       <Grid container>
-        {products.map((p, index) => (
+        {products.map((product, index) => (
           <Grid item key={index} xs={3}>
             <Box style={{ padding: 5 }}>
               <Card>
@@ -41,7 +41,7 @@ export default function ProductArea({ products }: ProductAreaProps) {
                   >
                     <CardMedia
                       component="img"
-                      image="https://res.cloudinary.com/docbzd7l8/image/upload/v1628831840/lx3dwcuwkgzvbk81asym.jpg"
+                      image="https://res.cloudinary.com/docbzd7l8/image/upload/v1637902317/9bba6de587b3c174fc0f59f8ecab6912_bmlh0m.jpg"
                       alt="Error"
                       style={{
                         maxWidth: "100%",

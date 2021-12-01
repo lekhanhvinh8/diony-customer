@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import Advertisements from "./advertisements";
 import SliderCategories from "./sliderCategories";
+import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 
 export interface HomeProps {}
 
@@ -14,7 +15,7 @@ export default function Home(props: HomeProps) {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      sx={{ bgcolor: "#f7f5f5" }}
+      sx={{ bgcolor: darkBackgroundColor }}
     >
       <Box sx={{ width: "90%" }}>
         <Box sx={{ marginTop: 4 }}>

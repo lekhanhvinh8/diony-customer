@@ -35,9 +35,10 @@ export default function ProductImages(props: ProductImagesProps) {
   const renderSliderImages = () => {
     const urls = [avatarUrl, ...imageUrls];
 
-    return urls.map((url) => {
+    return urls.map((url, index) => {
       return (
         <Box
+          key={index}
           style={{
             width: "100%",
             height: itemWidth,

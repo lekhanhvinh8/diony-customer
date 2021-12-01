@@ -1,10 +1,11 @@
-import { Box, Grid } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Box, Grid, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getPath } from "../../app/store/entities/categories";
 import {
   calculatePriceAndQuantity,
   getProductDetail,
+  reloadProductDetailPage,
   resetSelectedQuantity,
 } from "../../app/store/ui/productDetailPage";
 import CategoriesPath from "../category/categoriesPath";
@@ -16,19 +17,36 @@ import ProductVariants from "./productVariants";
 import ProductQuantity from "./productQuantity";
 import { useEffect } from "react";
 import AddToCartButton from "./addToCartButton";
+import PropductProperties from "./productProperties";
+import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 
 export interface ProductDetailProps {}
 
 export default function ProductDetail(props: ProductDetailProps) {
   const params = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const product = useAppSelector(getProductDetail);
   const categoriesPath = useAppSelector(getPath(product.categoryId));
 
   useEffect(() => {
-    dispatch(calculatePriceAndQuantity);
-    dispatch(resetSelectedQuantity);
+    const asyncFunc = async () => {
+      const productId = params.productId;
+      if (productId) {
+        try {
+          await dispatch(reloadProductDetailPage(Number(params.productId)));
+        } catch (ex) {
+          if (ex.response && ex.response.status === 404) {
+            navigate("/not-found");
+          }
+        }
+      }
+    };
+
+    asyncFunc();
   }, [dispatch]);
+
+  const array = [...Array(10)];
 
   return (
     <Box>
@@ -37,7 +55,7 @@ export default function ProductDetail(props: ProductDetailProps) {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        sx={{ bgcolor: "#f7f5f5" }}
+        sx={{ bgcolor: darkBackgroundColor }}
       >
         <Box sx={{ width: "90%" }}>
           <Box sx={{ marginTop: 2 }}>
@@ -70,6 +88,27 @@ export default function ProductDetail(props: ProductDetailProps) {
                 </Box>
               </Grid>
             </Grid>
+          </Box>
+
+          <Box sx={{ marginTop: 2 }}>
+            <Grid container>
+              <Grid item xs={9} sx={{ paddingRight: 2 }}>
+                <Box sx={{ bgcolor: "#ffffff" }}>
+                  <PropductProperties />
+                </Box>
+              </Grid>
+              <Grid item xs={3} sx={{ bgcolor: "#ffffff" }}>
+                Quang Cao
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Box sx={{ marginTop: 2 }}>
+            <Box sx={{ bgcolor: "#ffffff" }}>
+              {array.map((e, index) => (
+                <Box key={index}>ABC</Box>
+              ))}
+            </Box>
           </Box>
         </Box>
       </Box>

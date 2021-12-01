@@ -20,29 +20,27 @@ export interface UserRegister {
   password: string;
   name: string;
   phoneNumber: string;
+  returnUrl: string;
 }
 
 const apiEndpoint = apiUrl + "user";
 const jwtKeyName = "jwt";
+const userIdKeyName = "userId";
 
 const jwt = getJwt();
 http.setJwtHeader(jwt !== null ? jwt : "");
 
 export async function login(email: string, password: string) {
-  try {
-    const { data } = await httpService.post(apiEndpoint + "/login", {
-      email,
-      password,
-    });
-    if (data.roleName === "admin")
-      throw "admin can not sign in in customer form";
+  const { data } = await httpService.post(apiEndpoint + "/login", {
+    email,
+    password,
+  });
+  if (data.roleName === "admin") throw "admin can not sign in in customer form";
 
-    localStorage.setItem(jwtKeyName, data.token);
+  localStorage.setItem(jwtKeyName, data.token);
+  localStorage.setItem(userIdKeyName, data.id);
 
-    return data.token;
-  } catch (error) {
-    return null;
-  }
+  return data.token;
 }
 
 export async function register(user: UserRegister) {
@@ -72,6 +70,11 @@ export function getCurrentUser() {
   }
 
   return null;
+}
+
+export function getUserId() {
+  const userId = localStorage.getItem(userIdKeyName);
+  return userId;
 }
 
 export function getJwt() {

@@ -16,11 +16,12 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Joi from "joi";
+import Joi, { ValidationErrorFunction } from "joi";
 import { renderInput, validate } from "../../app/layouts/common/formUtil";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { register, UserRegister } from "../../app/services/authService";
+import { toast } from "react-toastify";
 
 const queryString = require("query-string");
 
@@ -35,18 +36,33 @@ const nameField = "nameField";
 const schemaMap = {
   [emailAddressField]: Joi.string()
     .email({ tlds: { allow: false } })
-    .required(),
-  [passwordField]: Joi.string().required().min(6),
+    .messages({
+      "string.email": "Email không hợp lệ",
+      "string.empty": "Không được bỏ trống",
+    }),
+  [passwordField]: Joi.string().empty().min(6).messages({
+    "string.min": "Mật khẩu cần có ít nhất 6 ký tự",
+    "string.empty": "Không được bỏ trống",
+  }),
+
   [confirmPasswordField]: Joi.any()
     .equal(Joi.ref(passwordField))
-    .required()
     .label("Confirm password")
-    .messages({ "any.only": "{{#label}} does not match" }),
+    .messages({
+      "any.only": "Mật khẩu xác nhận không trùng khớp",
+    }),
   [phoneNumberField]: Joi.string()
     .length(10)
     .pattern(/^[0-9]+$/)
-    .required(),
-  [nameField]: Joi.string().required(),
+    .required()
+    .messages({
+      "string.pattern.base": "Số điện thoại không hợp lệ",
+      "string.length": "Số điện thoại phải có độ dài bằng 10",
+      "string.empty": "Không được bỏ trống",
+    }),
+  [nameField]: Joi.string().messages({
+    "string.empty": "Không được bỏ trống",
+  }),
 };
 
 const schema = Joi.object().keys(schemaMap);
@@ -86,11 +102,14 @@ export default function SignUp(props: SignUpProps) {
         password: userForm[passwordField],
         name: userForm.nameField,
         phoneNumber: userForm[phoneNumberField],
+        returnUrl: "http://localhost:3000/login",
       };
       await register(user);
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      setBackdropOpen(false);
+      toast.error("Error");
     }
 
     // const parsed: SignUpSearch = queryString.parse(location.search);

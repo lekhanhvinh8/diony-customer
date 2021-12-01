@@ -9,6 +9,7 @@ import {
 import CategoriesPath from "./categoriesPath";
 import ElevationHeader from "../header/elevationHeader";
 import ProductFilter from "../productFilter/productFilter";
+import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 
 export interface CategoriesProps {}
 
@@ -29,7 +30,7 @@ export default function Categories(props: CategoriesProps) {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          sx={{ bgcolor: "#f7f5f5" }}
+          sx={{ bgcolor: darkBackgroundColor }}
         >
           <Box sx={{ width: "90%" }}>
             <Box sx={{ marginTop: 2 }}>
