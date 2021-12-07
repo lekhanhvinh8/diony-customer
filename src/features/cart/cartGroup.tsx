@@ -8,12 +8,20 @@ import {
 } from "@mui/material";
 import { Fragment } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { checkCartGroup, checkCartItem } from "../../app/store/ui/cart";
+import {
+  checkCartGroup,
+  checkCartItem,
+  isAllItemChecked,
+  isGroupChecked,
+  isGroupDisabled,
+  removeItemIndex,
+} from "../../app/store/ui/cart";
 import { formatMoney } from "../../app/utils/formatMoney";
 import ItemAmount from "./itemAmount";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { removeCart } from "../../app/store/entities/cart";
 import { Link } from "react-router-dom";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 
 export interface CartGroupProps {
   cartGroupIndex: number;
@@ -23,21 +31,10 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
   const dispatch = useAppDispatch();
   const cartPage = useAppSelector((state) => state.ui.cartPage);
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
+  const isChecked = useAppSelector(isGroupChecked(cartGroupIndex));
+  const isDisabled = useAppSelector(isGroupDisabled(cartGroupIndex));
 
   const cartGroup = cartGroups[cartGroupIndex];
-
-  const isGroupCheckBoxDisabled = () => {
-    const isDisabled = cartPage.cartGroupIndexes[cartGroupIndex]?.disabled;
-    if (isDisabled) return true;
-
-    return false;
-  };
-  const isGroupChecked = () => {
-    const isChecked = cartPage.cartGroupIndexes[cartGroupIndex]?.checked;
-    if (isChecked) return true;
-
-    return false;
-  };
 
   const isItemCheckBoxDisabled = (itemIdex: number) => {
     const isDisabled =
@@ -66,14 +63,17 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
         xs={12}
         sx={{ marginTop: 2, padding: 1, paddingLeft: 2, bgcolor: "#ffffff" }}
       >
-        <Checkbox
-          disabled={isGroupCheckBoxDisabled()}
-          checked={isGroupChecked()}
-          onChange={(e) => {
-            dispatch(checkCartGroup(cartGroupIndex, e.target.checked));
-          }}
-        />
-        {cartGroup.shopInfo.shopName}
+        <Box display="flex" alignItems="center">
+          <Checkbox
+            disabled={isDisabled}
+            checked={isChecked}
+            onChange={(e) => {
+              dispatch(checkCartGroup(cartGroupIndex, e.target.checked));
+            }}
+          />
+          <StorefrontIcon sx={{ ml: 2 }} color="error" />
+          <Typography sx={{ ml: 1 }}>{cartGroup.shopInfo.shopName}</Typography>
+        </Box>
       </Grid>
       {cartGroup.items.map((item, index) => (
         <Fragment key={index}>
@@ -183,11 +183,12 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
           >
             <Box sx={{ height: "100%" }} display="flex" alignItems="center">
               <IconButton
-                onClick={() => {
-                  dispatch(removeCart(cartGroupIndex, index));
+                onClick={async () => {
+                  await dispatch(removeCart(cartGroupIndex, index));
+                  await dispatch(removeItemIndex(cartGroupIndex, index));
                 }}
               >
-                <DeleteIcon />
+                <DeleteIcon color="error" />
               </IconButton>
             </Box>
           </Grid>

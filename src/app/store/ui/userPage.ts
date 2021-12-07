@@ -8,6 +8,7 @@ import {
   getProvinces,
   getWards,
 } from "../../services/addressService";
+import { getUserProfile, uploadUserAvatar } from "../../services/userService";
 import { AppThunk } from "../store";
 
 interface AddressPage {
@@ -23,12 +24,14 @@ interface AddressPage {
   selectedWardCode: string | null;
 }
 
-interface ProfilePage {
+export interface ProfilePage {
   name: string;
   shopName: string;
   phoneNumber: string;
   email: string;
   isMale: boolean;
+  avatarUrl: string | null;
+  avatarUploading: boolean;
 }
 
 interface UserPageStore {
@@ -55,6 +58,8 @@ const initialState: UserPageStore = {
     phoneNumber: "",
     email: "",
     isMale: false,
+    avatarUrl: null,
+    avatarUploading: false,
   },
 };
 
@@ -95,6 +100,24 @@ const slice = createSlice({
     updateAddressSet: (page, action: PayloadAction<Address | null>) => {
       page.addressPage.updatedAddress = action.payload;
     },
+    profilePageReloadded: (page, action: PayloadAction<ProfilePage | null>) => {
+      if (action.payload !== null) page.profilePage = action.payload;
+    },
+    nameSet: (page, action: PayloadAction<string>) => {
+      page.profilePage.name = action.payload;
+    },
+    shopNameSet: (page, action: PayloadAction<string>) => {
+      page.profilePage.shopName = action.payload;
+    },
+    isMaleSet: (page, action: PayloadAction<boolean>) => {
+      page.profilePage.isMale = action.payload;
+    },
+    avatarUploadingSet: (page, action: PayloadAction<boolean>) => {
+      page.profilePage.avatarUploading = action.payload;
+    },
+    avatarUrlUpdated: (page, action: PayloadAction<string>) => {
+      page.profilePage.avatarUrl = action.payload;
+    },
   },
 });
 
@@ -109,8 +132,17 @@ export const {
   wardSelected,
 } = slice.actions;
 
-const { addressDialogOpenSet, openFormForUpdateSet, updateAddressSet } =
-  slice.actions;
+const {
+  addressDialogOpenSet,
+  openFormForUpdateSet,
+  updateAddressSet,
+  profilePageReloadded,
+  nameSet,
+  shopNameSet,
+  isMaleSet,
+  avatarUploadingSet,
+  avatarUrlUpdated,
+} = slice.actions;
 
 export const setAddressDialogOpen =
   (open: boolean): AppThunk =>
@@ -192,4 +224,40 @@ export const setUpdateAddress =
   (address: Address | null): AppThunk =>
   (dispatch) => {
     dispatch(updateAddressSet(address));
+  };
+
+export const reloadProfilePage: AppThunk = async (dispatch, getState) => {
+  const userInfo = await getUserProfile();
+  dispatch(profilePageReloadded(userInfo));
+};
+
+export const setName =
+  (name: string): AppThunk =>
+  (dispatch) => {
+    dispatch(nameSet(name));
+  };
+
+export const setShopName =
+  (shopName: string): AppThunk =>
+  (dispatch) => {
+    dispatch(shopNameSet(shopName));
+  };
+
+export const setIsMale =
+  (isMale: boolean): AppThunk =>
+  (dispatch) => {
+    dispatch(isMaleSet(isMale));
+  };
+
+export const updateUserAvatar =
+  (userId: string, image: Blob): AppThunk =>
+  async (dispatch) => {
+    try {
+      dispatch(avatarUploadingSet(true));
+      const avatarUrl = await uploadUserAvatar(userId, image);
+      dispatch(avatarUrlUpdated(avatarUrl));
+      dispatch(avatarUploadingSet(false));
+    } catch (ex) {
+      dispatch(avatarUploadingSet(false));
+    }
   };

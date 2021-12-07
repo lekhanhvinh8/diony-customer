@@ -5,65 +5,63 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import * as React from "react";
 import ElevationScrollHeader from "../header/elevationHeader";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 import { useAppSelector } from "../../app/hooks";
-import { useNavigate } from "react-router-dom";
 import AddressCheckout from "./addressCheckout";
 import ItemsCheckout from "./itemsCheckout";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import PaymentSelection from "./paymentSelection";
 import OrderArea from "./orderArea";
+import {
+  initializeCheckoutPage,
+  reloadShippingCostsAndExpectedDeliveryTimes,
+} from "../../app/store/ui/checkout";
+import { useNavigate } from "react-router";
 
 export interface CheckoutProps {}
 
 export default function Checkout(props: CheckoutProps) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const cartGroups = useAppSelector((state) => state.entities.cartGroups);
   const cartPage = useAppSelector((state) => state.ui.cartPage);
+  const pageLoadding = useAppSelector(
+    (state) => state.ui.checkoutPage.pageReloading
+  );
+  const userAddresses = useAppSelector(
+    (state) => state.entities.address.addresses
+  );
 
-  useEffect(() => {}, [dispatch]);
+  useEffect(() => {
+    const asyncFunc = async () => {
+      await dispatch(
+        initializeCheckoutPage(userAddresses, cartGroups, cartPage)
+      );
+    };
 
-  const isCartHasItem = () => {
-    for (const cartGroupIndex of cartPage.cartGroupIndexes) {
-      for (const cartItemIndex of cartGroupIndex.cartItemIndexes) {
-        if (cartItemIndex.checked) return true;
-      }
-    }
+    asyncFunc();
+  }, [dispatch, userAddresses, cartGroups, cartPage]);
 
-    return false;
-  };
   return (
     <Box>
-      {/* {!isCartHasItem() && (
+      {pageLoadding && (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={true}
-          onClick={() => {
-            console.log("invalid cart");
-          }}
         >
           <Box>
-            <Typography variant="h4">Đơn hàng không hợp lệ</Typography>
             <Box
               sx={{ mt: 2, width: "100%" }}
               display="flex"
               justifyContent="center"
             >
-              <Button
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  navigate("/cart");
-                }}
-              >
-                Quay ve
-              </Button>
+              <CircularProgress color="inherit" />
             </Box>
           </Box>
         </Backdrop>
-      )} */}
+      )}
       <ElevationScrollHeader disableElevation />
       <Box
         display="flex"

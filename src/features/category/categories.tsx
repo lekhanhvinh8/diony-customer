@@ -1,6 +1,6 @@
 import { Box, Grid } from "@mui/material";
 import { Link, Outlet, useParams } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cateIdRouteParams } from "../../app/layouts/App";
 import {
   getChildrenOfCateId,
@@ -10,15 +10,21 @@ import CategoriesPath from "./categoriesPath";
 import ElevationHeader from "../header/elevationHeader";
 import ProductFilter from "../productFilter/productFilter";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
+import { useEffect } from "react";
+import { filterProducts } from "../../app/store/ui/categoryPage";
 
 export interface CategoriesProps {}
 
 export default function Categories(props: CategoriesProps) {
   const { [cateIdRouteParams]: cateId } = useParams();
+  const dispatch = useAppDispatch();
   const categoryChildren = useAppSelector(getChildrenOfCateId(Number(cateId)));
   const path = useAppSelector(getPath(Number(cateId)));
+  const products = useAppSelector((state) => state.ui.categoryPage.products);
 
-  const products = [...Array(100)];
+  useEffect(() => {
+    if (cateId) dispatch(filterProducts(Number(cateId), 1, 100));
+  }, [dispatch, cateId]);
 
   return (
     <Box>

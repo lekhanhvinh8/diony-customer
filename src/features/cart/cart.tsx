@@ -1,8 +1,7 @@
 import { Box, Checkbox, Grid, Typography } from "@mui/material";
 import { Fragment, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { loadCart } from "../../app/store/entities/cart";
-import { checkAll, initializePage } from "../../app/store/ui/cart";
+import { checkAll, isAllChecked, isAllDisabled } from "../../app/store/ui/cart";
 import ElevationScrollHeader from "../header/elevationHeader";
 import CartGroup from "./cartGroup";
 import OrderArea from "./orderArea";
@@ -14,6 +13,8 @@ export default function Cart(props: CartProps) {
   const dispatch = useAppDispatch();
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
   const cartPage = useAppSelector((state) => state.ui.cartPage);
+  const allChecked = useAppSelector(isAllChecked);
+  const allDisabled = useAppSelector(isAllDisabled);
 
   useEffect(() => {
     const asyncFunc = async () => {};
@@ -42,8 +43,8 @@ export default function Cart(props: CartProps) {
             >
               <Box sx={{ height: "100%" }} display="flex" alignItems="center">
                 <Checkbox
-                  disabled={cartPage.disabledAll}
-                  checked={cartPage.checkedAll}
+                  disabled={allDisabled}
+                  checked={allChecked}
                   onChange={(e) => {
                     dispatch(checkAll(e.target.checked));
                   }}
@@ -96,7 +97,7 @@ export default function Cart(props: CartProps) {
             </Grid>
 
             {cartGroups.map((cartGroup, index) => (
-              <Fragment>
+              <Fragment key={index}>
                 <CartGroup key={index} cartGroupIndex={index} />
 
                 <Grid

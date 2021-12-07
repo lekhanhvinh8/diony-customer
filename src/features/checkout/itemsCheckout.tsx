@@ -30,17 +30,14 @@ export default function ItemsCheckout(props: ItemsCheckoutProps) {
           </Grid>
         </Grid>
       </Box>
-      {cartPage.cartGroupIndexes.map((groupIndex) => {
+      {cartPage.cartGroupIndexes.map((groupIndex, index) => {
         if (
           groupIndex.cartItemIndexes.map((item) => item.checked).includes(true)
         ) {
-          const cartGroup = cartGroups[groupIndex.index];
+          const cartGroup = cartGroups[index];
           const cartItemIndexes = groupIndex.cartItemIndexes;
           return (
-            <Box
-              key={groupIndex.index}
-              sx={{ mt: 2, padding: 4, bgcolor: "#ffffff" }}
-            >
+            <Box key={index} sx={{ mt: 2, padding: 4, bgcolor: "#ffffff" }}>
               <GroupArea
                 cartGroup={cartGroup}
                 cartItemIndexes={cartItemIndexes}

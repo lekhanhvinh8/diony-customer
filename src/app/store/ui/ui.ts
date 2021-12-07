@@ -3,10 +3,14 @@ import counterReducer from "./counter";
 import productDetailPageReducer from "./productDetailPage";
 import userPageReducer from "./userPage";
 import cartPageReducer from "./cart";
+import categoryPageReducer from "./categoryPage";
+import checkoutPageReducer from "./checkout";
 
 export default combineReducers({
   counter: counterReducer,
   productDetailPage: productDetailPageReducer,
   userPage: userPageReducer,
   cartPage: cartPageReducer,
+  categoryPage: categoryPageReducer,
+  checkoutPage: checkoutPageReducer,
 });

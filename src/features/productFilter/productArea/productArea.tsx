@@ -10,15 +10,21 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { ProductCard } from "../../../app/models/productCard";
 import { formatMoney } from "../../../app/utils/formatMoney";
 
 export interface ProductAreaProps {
-  products: Array<any>;
+  products: Array<ProductCard>;
 }
 
 export default function ProductArea({ products }: ProductAreaProps) {
   const formatProductName = (name: string) => {
     const maxCharacter = 50;
+
+    if (name.length < maxCharacter) {
+      name = name.padEnd(maxCharacter - 1, " ");
+    }
+
     if (name.length > maxCharacter) {
       const format = name.slice(0, maxCharacter - 3);
       return format + "...";
@@ -33,7 +39,7 @@ export default function ProductArea({ products }: ProductAreaProps) {
           <Grid item key={index} xs={3}>
             <Box style={{ padding: 5 }}>
               <Card>
-                <CardActionArea component={Link} to={`/product/1`}>
+                <CardActionArea component={Link} to={`/product/${product.id}`}>
                   <Box
                     style={{
                       height: 234,
@@ -41,7 +47,7 @@ export default function ProductArea({ products }: ProductAreaProps) {
                   >
                     <CardMedia
                       component="img"
-                      image="https://res.cloudinary.com/docbzd7l8/image/upload/v1637902317/9bba6de587b3c174fc0f59f8ecab6912_bmlh0m.jpg"
+                      image={product.avatarUrl}
                       alt="Error"
                       style={{
                         maxWidth: "100%",
@@ -50,16 +56,14 @@ export default function ProductArea({ products }: ProductAreaProps) {
                     />
                   </Box>
                   <CardContent style={{ height: 150 }}>
-                    <Typography>
-                      {formatProductName(
-                        "Giày da nam công sở G107, giày lười nam da bò nappa cao cấp màu đen Bụi leather hộp sang trọng BH 12 tháng"
-                      )}
+                    <Typography sx={{ height: 48 }}>
+                      {formatProductName(product.name)}
                     </Typography>
                     <Stack direction="row" sx={{ height: 33 }} spacing={1}>
                       <Box sx={{ height: "100%" }}>
                         <Rating
                           size="small"
-                          value={3.4}
+                          value={product.starRate}
                           readOnly
                           sx={{ marginTop: 1 }}
                         />
@@ -70,16 +74,18 @@ export default function ProductArea({ products }: ProductAreaProps) {
                         alignItems="center"
                       >
                         <Typography height="50%" variant="body2">
-                          Đã bán 4
+                          {"Đã bán " + product.quantitySold}
                         </Typography>
                       </Box>
                     </Stack>
                     <Typography variant="h6" color="red">
-                      {formatMoney(1150000) + " ₫"}
+                      {formatMoney(product.price) + " ₫"}
                     </Typography>
                     <Stack direction="row">
                       <Box sx={{ flexGrow: 1 }}></Box>
-                      <Typography variant="body2">Hà Lội</Typography>
+                      <Typography variant="body2">
+                        {product.shopAddressProvince}
+                      </Typography>
                     </Stack>
                   </CardContent>
                 </CardActionArea>

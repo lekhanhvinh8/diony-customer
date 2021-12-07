@@ -1,8 +1,63 @@
 import { Box, Grid, Divider, Typography, Button } from "@mui/material";
+import { useAppSelector } from "../../app/hooks";
+import { formatMoney } from "../../app/utils/formatMoney";
 
 export interface OrderAreaProps {}
 
 export default function OrderArea(props: OrderAreaProps) {
+  const cartGroups = useAppSelector((state) => state.entities.cartGroups);
+  const cartPage = useAppSelector((state) => state.ui.cartPage);
+  const shippingCosts = useAppSelector(
+    (state) => state.ui.checkoutPage.shippingCosts
+  );
+
+  const hasAnyItems = () => {
+    let flag = false;
+
+    for (const groupIndex of cartPage.cartGroupIndexes) {
+      if (groupIndex.cartItemIndexes.map((i) => i.checked).includes(true))
+        flag = true;
+    }
+
+    return flag;
+  };
+
+  const getTotalShippingCosts = () => {
+    let sum = 0;
+    for (const cost of shippingCosts) {
+      if (cost.cost) sum += cost.cost;
+    }
+
+    return sum;
+  };
+
+  const getTotalItemPrices = () => {
+    let sum = 0;
+
+    if (cartGroups.length !== cartPage.cartGroupIndexes.length) return sum;
+
+    for (let i = 0; i < cartPage.cartGroupIndexes.length; i++) {
+      const groupIndex = cartPage.cartGroupIndexes[i];
+      const cartGroup = cartGroups[i];
+
+      if (cartGroup) {
+        let totalGroupPrice = 0;
+        for (let j = 0; j < groupIndex.cartItemIndexes.length; j++) {
+          const itemIndex = groupIndex.cartItemIndexes[j];
+          const item = cartGroup.items[j];
+
+          if (itemIndex.checked && item) {
+            totalGroupPrice += item.price * item.amount;
+          }
+        }
+
+        sum += totalGroupPrice;
+      }
+    }
+
+    return sum;
+  };
+
   return (
     <Box sx={{ mt: 2, padding: 4, bgcolor: "#ffffff" }}>
       <Box display="flex">
@@ -15,7 +70,7 @@ export default function OrderArea(props: OrderAreaProps) {
           </Grid>
           <Grid item xs={2}>
             <Typography display="flex" justifyContent="right">
-              200.000
+              {formatMoney(getTotalItemPrices()) + "₫"}
             </Typography>
           </Grid>
 
@@ -26,7 +81,7 @@ export default function OrderArea(props: OrderAreaProps) {
           </Grid>
           <Grid item xs={2}>
             <Typography display="flex" justifyContent="right">
-              200.000
+              {formatMoney(getTotalShippingCosts()) + "₫"}
             </Typography>
           </Grid>
 
@@ -43,7 +98,8 @@ export default function OrderArea(props: OrderAreaProps) {
           <Grid item xs={2}>
             <Box display="flex" justifyContent="right" alignItems="center">
               <Typography fontSize={30} color="red">
-                2.000.000 ₫
+                {formatMoney(getTotalShippingCosts() + getTotalItemPrices()) +
+                  "₫"}
               </Typography>
             </Box>
           </Grid>
@@ -57,6 +113,7 @@ export default function OrderArea(props: OrderAreaProps) {
           size="large"
           color="error"
           variant="contained"
+          disabled={!hasAnyItems()}
           sx={{ width: 400 }}
         >
           Đặt hàng

@@ -7,20 +7,25 @@ import {
 } from "@mui/material";
 import codMethodPayment from "../../app/layouts/images/codMethodPayment.png";
 import paypalMothodPayment from "../../app/layouts/images/paypalMethodPayment.png";
-import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectPaymentMethod } from "../../app/store/ui/checkout";
 
 export interface PaymentSelectionProps {}
 
 export default function PaymentSelection(props: PaymentSelectionProps) {
-  const [paymentMethod, setPaymentMethod] = useState(1);
+  const dispatch = useAppDispatch();
+  const selectedPaymentMethod = useAppSelector(
+    (state) => state.ui.checkoutPage.selectedPaymentMethod
+  );
 
   return (
     <Box>
       <Box sx={{ mt: 2, padding: 4, bgcolor: "#ffffff" }}>
         <RadioGroup
-          value={paymentMethod}
+          value={selectedPaymentMethod}
           onChange={(e) => {
-            setPaymentMethod(Number(e.target.value));
+            const paymentMethod = Number(e.target.value) === 1 ? 1 : 2;
+            dispatch(selectPaymentMethod(paymentMethod));
           }}
         >
           <FormControlLabel

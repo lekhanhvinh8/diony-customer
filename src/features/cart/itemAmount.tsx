@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 import { makeStyles } from "@mui/styles";
 import { changeItemAmount } from "../../app/store/entities/cart";
+import { disabledItemIndex, enableItemIndex } from "../../app/store/ui/cart";
 
 const useStyles = makeStyles({
   root: {
@@ -41,8 +42,11 @@ export default function ItemAmount({
       >
         <Button
           sx={{ width: 30 }}
-          onClick={() => {
-            dispatch(changeItemAmount(groupIndex, itemIndex, amount - 1));
+          onClick={async () => {
+            if (amount === 1)
+              await dispatch(disabledItemIndex(groupIndex, itemIndex));
+
+            await dispatch(changeItemAmount(groupIndex, itemIndex, amount - 1));
           }}
         >
           -
@@ -58,13 +62,19 @@ export default function ItemAmount({
               dispatch(
                 changeItemAmount(groupIndex, itemIndex, selectedQuantity)
               );
+
+              if (amount === 0 && selectedQuantity !== 0)
+                dispatch(enableItemIndex(groupIndex, itemIndex));
             }}
           />
         </Button>
         <Button
           sx={{ width: 30 }}
-          onClick={() => {
-            dispatch(changeItemAmount(groupIndex, itemIndex, amount + 1));
+          onClick={async () => {
+            if (amount === 0)
+              await dispatch(enableItemIndex(groupIndex, itemIndex));
+
+            await dispatch(changeItemAmount(groupIndex, itemIndex, amount + 1));
           }}
         >
           +

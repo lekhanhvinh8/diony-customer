@@ -22,7 +22,6 @@ import Address from "../../features/user/account/address";
 import Checkout from "../../features/checkout/checkout";
 import { initializePage } from "../store/ui/cart";
 import { loadCart } from "../store/entities/cart";
-import { getUserId } from "../services/authService";
 
 export const cateIdRouteParams = "cateId";
 export const productIdRouteParams = "productId";

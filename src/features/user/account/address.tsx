@@ -51,7 +51,7 @@ export default function Address(props: AddressProps) {
   const [deleteLoadding, setDeleteLoadding] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(loadAddresses(userId));
+    dispatch(loadAddresses());
   }, [dispatch, userId]);
 
   return (

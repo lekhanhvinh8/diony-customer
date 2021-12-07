@@ -39,6 +39,7 @@ export async function login(email: string, password: string) {
 
   localStorage.setItem(jwtKeyName, data.token);
   localStorage.setItem(userIdKeyName, data.id);
+  http.setJwtHeader(data.token);
 
   return data.token;
 }

@@ -1,7 +1,9 @@
+import { LoadingButton } from "@mui/lab";
 import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -13,15 +15,45 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useAppSelector } from "../../../app/hooks";
+import { updateUserProfile } from "../../../app/services/userService";
+import { useAppDispatch } from "./../../../app/hooks";
+import {
+  setName,
+  setShopName,
+  setIsMale,
+  reloadProfilePage,
+  updateUserAvatar,
+} from "./../../../app/store/ui/userPage";
 
 export interface ProfileProps {}
 
 export default function Profile(props: ProfileProps) {
+  const dispatch = useAppDispatch();
   const profilePage = useAppSelector((state) => state.ui.userPage.profilePage);
+  const userId = useAppSelector((state) => state.user.userId);
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      await dispatch(reloadProfilePage);
+    };
+
+    asyncFunc();
+  }, [dispatch, userId]);
 
   const leftColumnFormGrid = 3;
   const rightColumnFormGrid = 9;
+
+  const isSaveButtonDisabled = () => {
+    if (!userId || profilePage.name === "" || profilePage.shopName === "")
+      return true;
+
+    return false;
+  };
+
   return (
     <Box sx={{ padding: 3 }}>
       <Stack spacing={2}>
@@ -43,7 +75,14 @@ export default function Profile(props: ProfileProps) {
                   </Box>
                 </Grid>
                 <Grid item xs={rightColumnFormGrid}>
-                  <TextField size="small" fullWidth value={profilePage.name} />
+                  <TextField
+                    size="small"
+                    fullWidth
+                    value={profilePage.name}
+                    onChange={(e) => {
+                      dispatch(setName(e.currentTarget.value));
+                    }}
+                  />
                 </Grid>
 
                 <Grid item xs={leftColumnFormGrid} display="flex">
@@ -61,6 +100,9 @@ export default function Profile(props: ProfileProps) {
                     size="small"
                     fullWidth
                     value={profilePage.shopName}
+                    onChange={(e) => {
+                      dispatch(setShopName(e.currentTarget.value));
+                    }}
                   />
                 </Grid>
 
@@ -77,8 +119,11 @@ export default function Profile(props: ProfileProps) {
                 <Grid item xs={rightColumnFormGrid}>
                   <RadioGroup
                     row
-                    defaultValue={profilePage.isMale}
+                    value={profilePage.isMale}
                     name="radio-buttons-group"
+                    onChange={(e) => {
+                      dispatch(setIsMale(e.target.value === "true"));
+                    }}
                   >
                     <FormControlLabel
                       value={false}
@@ -139,9 +184,36 @@ export default function Profile(props: ProfileProps) {
 
                 <Grid item xs={leftColumnFormGrid}></Grid>
                 <Grid item xs={rightColumnFormGrid}>
-                  <Button variant="contained" size="large" color="error">
+                  <LoadingButton
+                    variant="contained"
+                    size="large"
+                    color="error"
+                    disabled={isSaveButtonDisabled()}
+                    loading={saveLoading}
+                    onClick={async () => {
+                      try {
+                        const { name, shopName, isMale, phoneNumber } =
+                          profilePage;
+                        if (userId) {
+                          setSaveLoading(true);
+                          await updateUserProfile(
+                            name,
+                            shopName,
+                            isMale,
+                            phoneNumber
+                          );
+                          setSaveLoading(false);
+
+                          toast.success("Lưu thành công");
+                        }
+                      } catch (ex) {
+                        setSaveLoading(false);
+                        toast.error("Lưu thất bại");
+                      }
+                    }}
+                  >
                     Lưu
-                  </Button>
+                  </LoadingButton>
                 </Grid>
               </Grid>
             </Box>
@@ -153,9 +225,15 @@ export default function Profile(props: ProfileProps) {
             <Box sx={{ marginTop: 2 }}>
               <Box display="flex" justifyContent="center">
                 <Avatar
-                  src="https://www.facebook.com/photo/?fbid=1522184281343741&set=a.1522184298010406"
+                  src={
+                    profilePage.avatarUrl && !profilePage.avatarUploading
+                      ? profilePage.avatarUrl
+                      : ""
+                  }
                   sx={{ width: 107, height: 107 }}
-                />
+                >
+                  {profilePage.avatarUploading && <CircularProgress />}
+                </Avatar>
               </Box>
               <Box sx={{ marginTop: 1 }} display="flex" justifyContent="center">
                 <label htmlFor="contained-button-file">
@@ -164,12 +242,15 @@ export default function Profile(props: ProfileProps) {
                     id="contained-button-file"
                     type="file"
                     style={{ display: "none" }}
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const files = e.target.files;
 
                       if (files && files.length > 0) {
                         const file = files[0];
 
+                        if (userId) {
+                          await dispatch(updateUserAvatar(userId, file));
+                        }
                         //upload avatar
                         //change url in store
                       }

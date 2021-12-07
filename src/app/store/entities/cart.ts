@@ -3,6 +3,11 @@ import { toast } from "react-toastify";
 import { CartGroup } from "../../models/cart/cartGroup";
 import { CartGroupItem } from "../../models/cart/cartGroupItem";
 import { AppThunk, RootState } from "../store";
+import {
+  cartGroupIndexAdded,
+  cartItemIndexAdded,
+  disabledItemIndex,
+} from "../ui/cart";
 import { getCombinationId } from "../ui/productDetailPage";
 import {
   addToCart as addToCartService,
@@ -25,7 +30,7 @@ const slice = createSlice({
     },
     cartItemAdded: (
       cartGroups,
-      action: PayloadAction<{ shopId: string; item: CartGroupItem }>
+      action: PayloadAction<{ shopId: number; item: CartGroupItem }>
     ) => {
       const { shopId, item } = action.payload;
       const index = cartGroups.findIndex((c) => c.shopInfo.shopId === shopId);
@@ -91,9 +96,8 @@ export const addToCart = (): AppThunk => async (dispatch, getState) => {
       amount
     );
 
-    const cartGroupIds = getState().entities.cartGroups.map(
-      (c) => c.shopInfo.shopId
-    );
+    const cartGroups = getState().entities.cartGroups;
+    const cartGroupIds = cartGroups.map((c) => c.shopInfo.shopId);
 
     if (newCartGroup.items.length === 0) return;
 
@@ -104,8 +108,15 @@ export const addToCart = (): AppThunk => async (dispatch, getState) => {
           item: newCartGroup.items[0],
         })
       );
+
+      const groupIndex = cartGroups.findIndex(
+        (c) => c.shopInfo.shopId === newCartGroup.shopInfo.shopId
+      );
+
+      dispatch(cartItemIndexAdded(groupIndex));
     } else {
       dispatch(cartGroupAdded(newCartGroup));
+      dispatch(cartGroupIndexAdded());
     }
   } catch (ex: any) {
     if (ex.response && ex.response.status === 400)
@@ -124,8 +135,9 @@ export const changeItemAmount =
       getState().entities.cartGroups[groupIndex]?.items[itemIndex];
 
     if (cartGroup && cartItem) {
-      if (newAmount < 0) {
+      if (newAmount <= 0) {
         dispatch(itemAmountChanged({ groupIndex, itemIndex, newAmount: 0 }));
+        dispatch(disabledItemIndex(groupIndex, itemIndex));
         return;
       }
       if (newAmount > cartItem.quantity) {

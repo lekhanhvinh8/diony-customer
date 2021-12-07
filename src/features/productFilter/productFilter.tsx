@@ -1,11 +1,12 @@
 import { Box, Grid } from "@mui/material";
 import { Category } from "../../app/models/category";
+import { ProductCard } from "../../app/models/productCard";
 import ProductArea from "./productArea/productArea";
 import ProductSideBar from "./sidebar/productSideBar";
 
 export interface ProductFilterProps {
   categories: Array<Category>;
-  products: Array<any>;
+  products: Array<ProductCard>;
 }
 
 export default function ProductFilter({

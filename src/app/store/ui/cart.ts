@@ -1,28 +1,20 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../store";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
+import { AppThunk, RootState } from "../store";
 
 export interface CartItemIndex {
-  index: number;
   checked: boolean;
   disabled: boolean;
 }
 
 export interface CartGroupIndex {
-  index: number;
-  checked: boolean;
-  disabled: boolean;
   cartItemIndexes: Array<CartItemIndex>;
 }
 
 export interface CartPageStore {
-  checkedAll: boolean;
-  disabledAll: boolean;
   cartGroupIndexes: Array<CartGroupIndex>;
 }
 
 const initialState: CartPageStore = {
-  checkedAll: true,
-  disabledAll: false,
   cartGroupIndexes: [],
 };
 
@@ -32,9 +24,6 @@ const slice = createSlice({
   reducers: {
     pageInitialized: (page, action: PayloadAction<Array<CartGroupIndex>>) => {
       page.cartGroupIndexes = action.payload;
-
-      if (page.cartGroupIndexes.map((c) => c.disabled).includes(true))
-        page.disabledAll = true;
     },
     itemIndexChecked: (
       page,
@@ -49,15 +38,48 @@ const slice = createSlice({
       page.cartGroupIndexes[groupIndex].cartItemIndexes[itemIndex].checked =
         checked;
     },
-    groupIndexChecked: (
-      page,
-      action: PayloadAction<{ groupIndex: number; checked: boolean }>
-    ) => {
-      const { groupIndex, checked } = action.payload;
-      page.cartGroupIndexes[groupIndex].checked = checked;
+    cartGroupIndexAdded: (page) => {
+      const item: CartItemIndex = {
+        disabled: false,
+        checked: false,
+      };
+
+      const group: CartGroupIndex = {
+        cartItemIndexes: [item],
+      };
+
+      page.cartGroupIndexes.push(group);
     },
-    allGroupChecked: (page, action: PayloadAction<boolean>) => {
-      page.checkedAll = action.payload;
+    cartItemIndexAdded: (page, action: PayloadAction<number>) => {
+      const groupIndex = action.payload;
+      const item: CartItemIndex = {
+        disabled: false,
+        checked: false,
+      };
+      page.cartGroupIndexes[groupIndex].cartItemIndexes.push(item);
+    },
+    cartItemIndexRemoved: (
+      page,
+      action: PayloadAction<{ groupIndex: number; itemIndex: number }>
+    ) => {
+      const { groupIndex, itemIndex } = action.payload;
+
+      page.cartGroupIndexes[groupIndex].cartItemIndexes.splice(itemIndex, 1);
+
+      if (page.cartGroupIndexes[groupIndex].cartItemIndexes.length === 0)
+        page.cartGroupIndexes.splice(groupIndex, 1);
+    },
+    cartItemIndexDisabled: (
+      page,
+      action: PayloadAction<{
+        groupIndex: number;
+        itemIndex: number;
+        disabled: boolean;
+      }>
+    ) => {
+      const { groupIndex, itemIndex, disabled } = action.payload;
+      page.cartGroupIndexes[groupIndex].cartItemIndexes[itemIndex].disabled =
+        disabled;
     },
   },
 });
@@ -67,22 +89,21 @@ export default slice.reducer;
 const {
   pageInitialized,
   itemIndexChecked,
-  groupIndexChecked,
-  allGroupChecked,
+  cartItemIndexRemoved,
+  cartItemIndexDisabled,
 } = slice.actions;
+export const { cartGroupIndexAdded, cartItemIndexAdded } = slice.actions;
+
+//action creators
 
 export const initializePage: AppThunk = async (dispatch, getState) => {
   const cartGroups = getState().entities.cartGroups;
   const cartGroupIndexes = cartGroups.map((group, index) => {
     const cartgroupIndex: CartGroupIndex = {
-      index: index,
-      checked: true,
-      disabled: false,
       cartItemIndexes: group.items.map((item, index) => {
         const cartItemIndex: CartItemIndex = {
-          index: index,
           disabled: false,
-          checked: true,
+          checked: false,
         };
 
         return cartItemIndex;
@@ -102,10 +123,6 @@ export const initializePage: AppThunk = async (dispatch, getState) => {
 
       if (cartItem.amount > cartItem.quantity) cartItemIndex.disabled = true;
     }
-
-    if (cartGroupIndex.cartItemIndexes.map((c) => c.disabled).includes(true)) {
-      cartGroupIndex.disabled = true;
-    }
   }
 
   dispatch(pageInitialized(cartGroupIndexes));
@@ -116,26 +133,18 @@ export const checkAll =
   (dispatch, getState) => {
     const cartGroupIndexes = getState().ui.cartPage.cartGroupIndexes;
 
-    for (const cartGroupIndex of cartGroupIndexes) {
-      for (const cartItemIndex of cartGroupIndex.cartItemIndexes) {
+    for (let i = 0; i < cartGroupIndexes.length; i++) {
+      const groupIndex = cartGroupIndexes[i];
+      for (let j = 0; j < groupIndex.cartItemIndexes.length; j++) {
         dispatch(
           itemIndexChecked({
-            groupIndex: cartGroupIndex.index,
-            itemIndex: cartItemIndex.index,
             checked: checked,
+            groupIndex: i,
+            itemIndex: j,
           })
         );
       }
-
-      dispatch(
-        groupIndexChecked({
-          groupIndex: cartGroupIndex.index,
-          checked: checked,
-        })
-      );
     }
-
-    dispatch(allGroupChecked(checked));
   };
 
 export const checkCartGroup =
@@ -144,17 +153,9 @@ export const checkCartGroup =
     const cartGroupIndex = getState().ui.cartPage.cartGroupIndexes[groupIndex];
 
     if (cartGroupIndex) {
-      if (cartGroupIndex.disabled) return;
-
       for (let i = 0; i < cartGroupIndex.cartItemIndexes.length; i++) {
         dispatch(itemIndexChecked({ groupIndex, itemIndex: i, checked }));
       }
-
-      dispatch(groupIndexChecked({ groupIndex, checked }));
-
-      if (isAllGroupChecked(getState().ui.cartPage.cartGroupIndexes))
-        dispatch(allGroupChecked(true));
-      else dispatch(allGroupChecked(false));
     }
   };
 
@@ -170,19 +171,103 @@ export const checkCartItem =
       if (cartItemIndex.disabled) return;
 
       dispatch(itemIndexChecked({ groupIndex, itemIndex, checked }));
-
-      if (isAllItemChecked(getState().ui.cartPage.cartGroupIndexes[groupIndex]))
-        dispatch(groupIndexChecked({ groupIndex, checked: true }));
-      else dispatch(groupIndexChecked({ groupIndex, checked: false }));
-
-      if (isAllGroupChecked(getState().ui.cartPage.cartGroupIndexes))
-        dispatch(allGroupChecked(true));
-      else dispatch(allGroupChecked(false));
     }
   };
 
+export const removeItemIndex =
+  (groupIndex: number, itemIndex: number): AppThunk =>
+  (dispatch, getState) => {
+    const cartGroupIndexes = getState().ui.cartPage.cartGroupIndexes;
+
+    if (cartGroupIndexes[groupIndex]?.cartItemIndexes[itemIndex]) {
+      dispatch(cartItemIndexRemoved({ groupIndex, itemIndex }));
+    }
+  };
+
+export const disabledItemIndex =
+  (groupIndex: number, itemIndex: number): AppThunk =>
+  (dispatch, getState) => {
+    const cartGroupIndexes = getState().ui.cartPage.cartGroupIndexes;
+
+    if (cartGroupIndexes[groupIndex]?.cartItemIndexes[itemIndex]) {
+      dispatch(itemIndexChecked({ groupIndex, itemIndex, checked: false }));
+      dispatch(
+        cartItemIndexDisabled({ groupIndex, itemIndex, disabled: true })
+      );
+    }
+  };
+
+export const enableItemIndex =
+  (groupIndex: number, itemIndex: number): AppThunk =>
+  (dispatch, getState) => {
+    const cartGroupIndexes = getState().ui.cartPage.cartGroupIndexes;
+
+    if (cartGroupIndexes[groupIndex]?.cartItemIndexes[itemIndex]) {
+      dispatch(
+        cartItemIndexDisabled({ groupIndex, itemIndex, disabled: false })
+      );
+    }
+  };
+
+//selectors
+export const isGroupDisabled = (groupIndex: number) =>
+  createSelector(
+    (state: RootState) => state.ui.cartPage,
+    (page) => {
+      const groupCartIndex = page.cartGroupIndexes[groupIndex];
+      return isAllItemDisabled(groupCartIndex);
+    }
+  );
+
+export const isGroupChecked = (groupIndex: number) =>
+  createSelector(
+    (state: RootState) => state.ui.cartPage,
+    (page) => {
+      const groupCartIndex = page.cartGroupIndexes[groupIndex];
+      return isAllItemChecked(groupCartIndex);
+    }
+  );
+
+export const isAllDisabled = createSelector(
+  (state: RootState) => state.ui.cartPage,
+  (page) => {
+    return isAllGroupDisabled(page.cartGroupIndexes);
+  }
+);
+
+export const isAllChecked = createSelector(
+  (state: RootState) => state.ui.cartPage,
+  (page) => {
+    return isAllGroupChecked(page.cartGroupIndexes);
+  }
+);
+
 //helper
-const isAllItemChecked = (cartGroup: CartGroupIndex) => {
+export const isAllItemDisabled = (cartGroup: CartGroupIndex) => {
+  if (cartGroup) {
+    if (cartGroup.cartItemIndexes.length === 0) return true;
+
+    for (const itemIndex of cartGroup.cartItemIndexes) {
+      if (itemIndex.disabled === true) return true;
+    }
+
+    return false;
+  }
+
+  return false;
+};
+
+export const isAllGroupDisabled = (allCartGroups: Array<CartGroupIndex>) => {
+  if (allCartGroups.length === 0) return true;
+
+  for (const cartGroup of allCartGroups) {
+    if (isAllItemDisabled(cartGroup) === true) return true;
+  }
+
+  return false;
+};
+
+export const isAllItemChecked = (cartGroup: CartGroupIndex) => {
   if (cartGroup) {
     if (cartGroup.cartItemIndexes.length === 0) return false;
 
@@ -196,11 +281,11 @@ const isAllItemChecked = (cartGroup: CartGroupIndex) => {
   return false;
 };
 
-const isAllGroupChecked = (allCartGroups: Array<CartGroupIndex>) => {
+export const isAllGroupChecked = (allCartGroups: Array<CartGroupIndex>) => {
   if (allCartGroups.length === 0) return false;
 
   for (const cartGroup of allCartGroups) {
-    if (cartGroup.checked === false) return false;
+    if (isAllItemChecked(cartGroup) === false) return false;
   }
 
   return true;

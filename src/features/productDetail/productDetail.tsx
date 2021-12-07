@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getPath } from "../../app/store/entities/categories";
-import {
+import productDetailPage, {
   calculatePriceAndQuantity,
   getProductDetail,
   reloadProductDetailPage,
@@ -35,7 +35,7 @@ export default function ProductDetail(props: ProductDetailProps) {
       if (productId) {
         try {
           await dispatch(reloadProductDetailPage(Number(params.productId)));
-        } catch (ex) {
+        } catch (ex: any) {
           if (ex.response && ex.response.status === 404) {
             navigate("/not-found");
           }
@@ -101,6 +101,16 @@ export default function ProductDetail(props: ProductDetailProps) {
                 Quang Cao
               </Grid>
             </Grid>
+          </Box>
+
+          <Box sx={{ marginTop: 2 }}>
+            <Box sx={{ bgcolor: "#ffffff" }}>
+              <Box sx={{ padding: 2 }}>
+                <Typography style={{ whiteSpace: "pre-line" }}>
+                  {product.description}
+                </Typography>
+              </Box>
+            </Box>
           </Box>
 
           <Box sx={{ marginTop: 2 }}>

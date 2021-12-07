@@ -2,6 +2,7 @@ import http from "./httpService";
 import { apiUrl } from "../../config.json";
 import { ProductDetail } from "../models/productDetail";
 import { ProductVariant, VariantValueInfo } from "../models/productVariant";
+import { ProductCard } from "./../models/productCard";
 import {
   ProductSelectProperty,
   ProductTypingProperty,
@@ -87,4 +88,33 @@ export const getProductProperties = async (productId: number) => {
     selectProperties,
     typingProperties,
   };
+};
+
+export const getFilteredProductOfCategory = async (
+  cateId: number,
+  pageNumber: number,
+  pageSize: number
+) => {
+  const { data } = await http.get(apiEndpoint + "/getByCategory/" + cateId, {
+    params: {
+      pageNumber,
+      pageSize,
+    },
+  });
+
+  const products: Array<ProductCard> = data.map((element: any) => {
+    const product: ProductCard = {
+      id: element.id,
+      name: element.name,
+      avatarUrl: element.coverImage,
+      starRate: element.starRate,
+      quantitySold: element.quantitySold,
+      price: element.price,
+      shopAddressProvince: element.province,
+    };
+
+    return product;
+  });
+
+  return products;
 };

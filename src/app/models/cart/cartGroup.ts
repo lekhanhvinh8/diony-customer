@@ -2,7 +2,7 @@ import { CartGroupItem } from "./cartGroupItem";
 
 export interface CartGroup {
   shopInfo: {
-    shopId: string;
+    shopId: number;
     shopName: string;
   };
   items: Array<CartGroupItem>;

@@ -15,7 +15,7 @@ export default function ItemArea({ item }: ItemAreaProps) {
             <Box sx={{ width: 40, height: 40 }}>
               <img
                 style={{ maxHeight: "100%", maxWidth: "100%" }}
-                src="https://res.cloudinary.com/docbzd7l8/image/upload/v1637636516/w8yqnhgdfgj5ijvjto9k.jpg"
+                src={item.avatarUrl}
               ></img>
             </Box>
             <Box sx={{ width: "100%" }} display="flex" alignItems="center">
@@ -25,7 +25,7 @@ export default function ItemArea({ item }: ItemAreaProps) {
         </Grid>
         <Grid item xs={2}>
           <Box sx={{ height: "100%" }} display="flex" alignItems="center">
-            Phan loai A
+            {item.combinationName}
           </Box>
         </Grid>
         <Grid item xs={2}>

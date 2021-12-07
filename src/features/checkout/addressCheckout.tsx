@@ -18,17 +18,26 @@ import address, {
   loadAddresses,
 } from "../../app/store/entities/address";
 import { useEffect, useState } from "react";
-import { Address } from "../../app/models/address/address";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { initializeCheckoutPage } from "./../../app/store/ui/checkout";
+import {
+  reloadShippingCostsAndExpectedDeliveryTimes,
+  reselectAddress,
+  selectAddressIdTemporarilly,
+} from "./../../app/store/ui/checkout";
 
 export interface AddressCheckoutProps {}
 
 export default function AddressCheckout(props: AddressCheckoutProps) {
   const dispatch = useAppDispatch();
   const userId = useAppSelector((state) => state.user.userId);
-  const defaultAddress: Address | null = useAppSelector(getDefaultAddress);
+  const selectedAddressId = useAppSelector(
+    (state) => state.ui.checkoutPage.selectedAddressId
+  );
+  const tempSelectedAddressId = useAppSelector(
+    (state) => state.ui.checkoutPage.tempSelectedAddressId
+  );
+
   const userAddresses = useAppSelector(
     (state) => state.entities.address.addresses
   );
@@ -37,18 +46,12 @@ export default function AddressCheckout(props: AddressCheckoutProps) {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      dispatch(loadAddresses(userId));
+      if (userId) dispatch(loadAddresses());
     };
     asyncFunc();
   }, [dispatch, userId]);
 
-  useEffect(() => {
-    const asyncFunc = async () => {
-      dispatch(initializeCheckoutPage);
-    };
-
-    asyncFunc();
-  }, [dispatch, userAddresses]);
+  const selectedAddress = userAddresses.find((a) => a.id === selectedAddressId);
 
   return (
     <Box>
@@ -59,20 +62,20 @@ export default function AddressCheckout(props: AddressCheckoutProps) {
         </Typography>
       </Stack>
       <Box sx={{ mt: 2 }}>
-        {defaultAddress ? (
+        {selectedAddress ? (
           <Box>
             <Grid container>
               <Grid item xs={2}>
                 <Box>
                   <Typography fontWeight="bold" fontSize={17}>
-                    {defaultAddress.customerName}
+                    {selectedAddress.customerName}
                   </Typography>
                   <Typography fontWeight="bold" fontSize={17}>
-                    {defaultAddress.phoneNumber}
+                    {selectedAddress.phoneNumber}
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={10}>
                 <Box
                   display="flex"
                   justifyContent="right"
@@ -80,29 +83,32 @@ export default function AddressCheckout(props: AddressCheckoutProps) {
                   sx={{ height: "100%" }}
                 >
                   <Typography fontSize={17}>
-                    {defaultAddress.detail +
+                    {selectedAddress.detail +
                       ", " +
-                      defaultAddress.wardName +
+                      selectedAddress.wardName +
                       ", " +
-                      defaultAddress.districtName +
+                      selectedAddress.districtName +
                       ", " +
-                      defaultAddress.provinceName}
+                      selectedAddress.provinceName}
                   </Typography>
-                </Box>
-              </Grid>
-              <Grid xs={1}>
-                <Box display="flex" alignItems="center" sx={{ height: "100%" }}>
-                  <IconButton
-                    onClick={() => {
-                      setAddressSelectionCollapse(!addressSelectionCollapse);
-                    }}
+
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    sx={{ height: "100%" }}
                   >
-                    {!addressSelectionCollapse ? (
-                      <KeyboardArrowDownIcon />
-                    ) : (
-                      <KeyboardArrowUpIcon />
-                    )}
-                  </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        setAddressSelectionCollapse(!addressSelectionCollapse);
+                      }}
+                    >
+                      {!addressSelectionCollapse ? (
+                        <KeyboardArrowDownIcon />
+                      ) : (
+                        <KeyboardArrowUpIcon />
+                      )}
+                    </IconButton>
+                  </Box>
                 </Box>
               </Grid>
             </Grid>
@@ -112,14 +118,17 @@ export default function AddressCheckout(props: AddressCheckoutProps) {
                 <Divider sx={{ mt: 3 }} />
                 <Box sx={{ mt: 3 }}>
                   <RadioGroup
-                    value={userAddresses[0].id.toString()}
+                    value={tempSelectedAddressId?.toString()}
                     onChange={(e) => {
-                      //setPaymentMethod(Number(e.target.value));
+                      dispatch(
+                        selectAddressIdTemporarilly(Number(e.target.value))
+                      );
                     }}
                   >
-                    {userAddresses.map((address) => {
+                    {userAddresses.map((address, index) => {
                       return (
                         <FormControlLabel
+                          key={index}
                           value={address.id.toString()}
                           control={<Radio />}
                           label={
@@ -141,11 +150,34 @@ export default function AddressCheckout(props: AddressCheckoutProps) {
                   </RadioGroup>
                 </Box>
                 <Box sx={{ mt: 3 }} display="flex">
-                  <Button variant="outlined" color="error">
-                    Huy
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => {
+                      if (selectedAddressId)
+                        dispatch(
+                          selectAddressIdTemporarilly(selectedAddressId)
+                        );
+                      setAddressSelectionCollapse(false);
+                    }}
+                  >
+                    Hủy
                   </Button>
-                  <Button sx={{ ml: 2 }} variant="outlined" color="success">
-                    Xac Nhan
+                  <Button
+                    sx={{ ml: 2 }}
+                    variant="outlined"
+                    color="success"
+                    onClick={async () => {
+                      await dispatch(reselectAddress());
+                      setAddressSelectionCollapse(false);
+                      await dispatch(
+                        reloadShippingCostsAndExpectedDeliveryTimes(
+                          tempSelectedAddressId
+                        )
+                      );
+                    }}
+                  >
+                    Xác nhận
                   </Button>
                 </Box>
               </Collapse>

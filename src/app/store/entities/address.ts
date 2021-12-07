@@ -85,20 +85,16 @@ export const getDefaultAddress = createSelector(
 
 //action creators
 
-export const loadAddresses =
-  (userId: string | null): AppThunk =>
-  async (dispatch, getState) => {
-    if (!userId) return;
-
-    const addresses = await getAddresses(userId);
-    dispatch(addressesLoadded(addresses));
-  };
+export const loadAddresses = (): AppThunk => async (dispatch) => {
+  const addresses = await getAddresses();
+  dispatch(addressesLoadded(addresses));
+};
 
 export const addAddress =
   (address: AddressRequestData, userId: string): AppThunk =>
   async (dispatch) => {
     try {
-      const newAddress = await addAddressService(address, userId);
+      const newAddress = await addAddressService(address);
       dispatch(addressAdded(newAddress));
       toast.success("Thêm thành công");
     } catch (error) {
@@ -111,7 +107,7 @@ export const updateAddress =
   async (dispatch) => {
     try {
       const updatedAddress = await updateAddressService(address);
-      dispatch(addressUpdated(updatedAddress));
+      await dispatch(addressUpdated(updatedAddress));
       toast.success("Cập nhật thành công");
     } catch (ex) {
       toast.error("Cập nhật thất bại");
