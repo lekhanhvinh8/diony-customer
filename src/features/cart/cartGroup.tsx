@@ -36,10 +36,13 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
 
   const cartGroup = cartGroups[cartGroupIndex];
 
-  const isItemCheckBoxDisabled = (itemIdex: number) => {
-    const isDisabled =
-      cartPage.cartGroupIndexes[cartGroupIndex]?.cartItemIndexes[itemIdex]
+  const isItemCheckBoxDisabled = (itemIndex: number) => {
+    let isDisabled =
+      cartPage.cartGroupIndexes[cartGroupIndex]?.cartItemIndexes[itemIndex]
         ?.disabled;
+
+    //bugs => must create a isDisabled in store
+    if (cartGroup.items[itemIndex].amount == 0) isDisabled = true;
 
     if (isDisabled) return true;
 

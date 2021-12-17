@@ -22,6 +22,8 @@ import Address from "../../features/user/account/address";
 import Checkout from "../../features/checkout/checkout";
 import { initializePage } from "../store/ui/cart";
 import { loadCart } from "../store/entities/cart";
+import { setCategoriesInit } from "../store/ui/categoryPage";
+import Search from "../../features/search/search";
 
 export const cateIdRouteParams = "cateId";
 export const productIdRouteParams = "productId";
@@ -32,8 +34,11 @@ function App() {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      await dispatch(setUser);
-      dispatch(loadCategories());
+      try {
+        await dispatch(setUser);
+        await dispatch(loadCategories());
+        await dispatch(setCategoriesInit(true));
+      } catch (ex) {}
     };
 
     asyncFunc();
@@ -59,6 +64,7 @@ function App() {
         <Route path={"/cate/:" + cateIdRouteParams} element={<Categories />}>
           <Route path="" element={<NotFound />} />
         </Route>
+        <Route path="/search" element={<Search />} />
         <Route
           path={"/product/:" + productIdRouteParams}
           element={<ProductDetail />}

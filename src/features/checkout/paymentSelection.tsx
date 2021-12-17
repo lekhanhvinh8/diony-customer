@@ -24,12 +24,12 @@ export default function PaymentSelection(props: PaymentSelectionProps) {
         <RadioGroup
           value={selectedPaymentMethod}
           onChange={(e) => {
-            const paymentMethod = Number(e.target.value) === 1 ? 1 : 2;
-            dispatch(selectPaymentMethod(paymentMethod));
+            const paymentMethod = e.target.value;
+            dispatch(selectPaymentMethod(paymentMethod as "COD" | "PAYPAL"));
           }}
         >
           <FormControlLabel
-            value={1}
+            value={"COD"}
             control={<Radio />}
             label={
               <Box display="flex" alignItems="center">
@@ -42,7 +42,7 @@ export default function PaymentSelection(props: PaymentSelectionProps) {
           />
           <FormControlLabel
             sx={{ mt: 3 }}
-            value="2"
+            value="PAYPAL"
             control={<Radio />}
             label={
               <Box display="flex" alignItems="center">

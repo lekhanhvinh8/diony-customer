@@ -1,99 +1,48 @@
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Grid,
-  Rating,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { Link } from "react-router-dom";
-import { ProductCard } from "../../../app/models/productCard";
-import { formatMoney } from "../../../app/utils/formatMoney";
+import { Box, Grid } from "@mui/material";
+import { useAppSelector } from "../../../app/hooks";
+import ProductCard from "./productCard";
 
-export interface ProductAreaProps {
-  products: Array<ProductCard>;
-}
+export interface ProductAreaProps {}
 
-export default function ProductArea({ products }: ProductAreaProps) {
-  const formatProductName = (name: string) => {
-    const maxCharacter = 50;
+export default function ProductArea(props: ProductAreaProps) {
+  const products = useAppSelector(
+    (state) => state.ui.productFilterPage.products
+  );
+  const productsLoading = useAppSelector(
+    (state) => state.ui.productFilterPage.productsLoading
+  );
+  const pageSize = useAppSelector(
+    (state) => state.ui.productFilterPage.pageSize
+  );
 
-    if (name.length < maxCharacter) {
-      name = name.padEnd(maxCharacter - 1, " ");
-    }
+  const fakeProducts = [...Array(pageSize)];
 
-    if (name.length > maxCharacter) {
-      const format = name.slice(0, maxCharacter - 3);
-      return format + "...";
-    }
-
-    return name;
-  };
   return (
     <Box>
-      <Grid container>
-        {products.map((product, index) => (
-          <Grid item key={index} xs={3}>
-            <Box style={{ padding: 5 }}>
-              <Card>
-                <CardActionArea component={Link} to={`/product/${product.id}`}>
-                  <Box
-                    style={{
-                      height: 234,
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={product.avatarUrl}
-                      alt="Error"
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: "100%",
-                      }}
-                    />
-                  </Box>
-                  <CardContent style={{ height: 150 }}>
-                    <Typography sx={{ height: 48 }}>
-                      {formatProductName(product.name)}
-                    </Typography>
-                    <Stack direction="row" sx={{ height: 33 }} spacing={1}>
-                      <Box sx={{ height: "100%" }}>
-                        <Rating
-                          size="small"
-                          value={product.starRate}
-                          readOnly
-                          sx={{ marginTop: 1 }}
-                        />
-                      </Box>
-                      <Box
-                        sx={{ height: "100%" }}
-                        display="flex"
-                        alignItems="center"
-                      >
-                        <Typography height="50%" variant="body2">
-                          {"Đã bán " + product.quantitySold}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                    <Typography variant="h6" color="red">
-                      {formatMoney(product.price) + " ₫"}
-                    </Typography>
-                    <Stack direction="row">
-                      <Box sx={{ flexGrow: 1 }}></Box>
-                      <Typography variant="body2">
-                        {product.shopAddressProvince}
-                      </Typography>
-                    </Stack>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
+      {!productsLoading && products.length === 0 ? (
+        <Box
+          sx={{ height: "100%" }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          Không có sản phẩm
+        </Box>
+      ) : (
+        <Grid container>
+          {!productsLoading
+            ? products.map((product, index) => (
+                <Grid item key={index} xs={3}>
+                  <ProductCard product={product} />
+                </Grid>
+              ))
+            : fakeProducts.map((product, index) => (
+                <Grid item key={index} xs={3}>
+                  <ProductCard product={null} />
+                </Grid>
+              ))}
+        </Grid>
+      )}
     </Box>
   );
 }

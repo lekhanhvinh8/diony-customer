@@ -5,8 +5,7 @@ import {
   Grid,
   InputBase,
   Stack,
-  TextField,
-  Typography,
+  
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -14,7 +13,6 @@ import {
   setSelectedQuantity,
 } from "../../app/store/ui/productDetailPage";
 import { makeStyles } from "@mui/styles";
-import { useState } from "react";
 
 const useStyles = makeStyles({
   root: {

@@ -11,22 +11,24 @@ import { Address } from "../../models/address/address";
 export interface CheckoutStore {
   selectedAddressId: number | null;
   tempSelectedAddressId: number | null;
-  selectedPaymentMethod: 1 | 2 | 3;
+  selectedPaymentMethod: "COD" | "PAYPAL";
   expectedDeliveryTimes: Array<{
     shopId: number;
     time: string | null;
   }>;
   shippingCosts: Array<{ shopId: number; cost: number | null }>;
   pageReloading: boolean;
+  orderLoading: boolean;
 }
 
 export const initialCheckoutState: CheckoutStore = {
   selectedAddressId: null,
   tempSelectedAddressId: null,
-  selectedPaymentMethod: 1,
+  selectedPaymentMethod: "COD",
   expectedDeliveryTimes: [],
   shippingCosts: [],
   pageReloading: false,
+  orderLoading: false,
 };
 
 const slice = createSlice({
@@ -63,6 +65,9 @@ const slice = createSlice({
     pageReloadingSet: (page, action: PayloadAction<boolean>) => {
       page.pageReloading = action.payload;
     },
+    orderLoadingSet: (page, action: PayloadAction<boolean>) => {
+      page.orderLoading = action.payload;
+    },
   },
 });
 
@@ -76,6 +81,7 @@ const {
   deliveryTimeReloadded,
   shippingCostReloadded,
   pageReloadingSet,
+  orderLoadingSet: orderLoaddingSet,
 } = slice.actions;
 
 //selectors
@@ -172,10 +178,11 @@ export const initializeCheckoutPage =
     const checkoutState: CheckoutStore = {
       selectedAddressId: selectedAddressId,
       tempSelectedAddressId: selectedAddressId,
-      selectedPaymentMethod: 1,
+      selectedPaymentMethod: "COD",
       expectedDeliveryTimes: expectedDeliveryTimes,
       shippingCosts: shippingCosts,
       pageReloading: false,
+      orderLoading: false,
     };
 
     dispatch(pageInitialized(checkoutState));
@@ -256,4 +263,10 @@ export const reloadShippingCostsAndExpectedDeliveryTimes =
     } catch (ex) {
       dispatch(pageReloadingSet(false));
     }
+  };
+
+export const setOrderLoading =
+  (isLoading: boolean): AppThunk =>
+  async (dispatch) => {
+    dispatch(pageReloadingSet(isLoading));
   };

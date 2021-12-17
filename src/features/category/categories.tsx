@@ -1,5 +1,5 @@
-import { Box, Grid } from "@mui/material";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Box } from "@mui/material";
+import { Outlet, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cateIdRouteParams } from "../../app/layouts/App";
 import {
@@ -11,25 +11,37 @@ import ElevationHeader from "../header/elevationHeader";
 import ProductFilter from "../productFilter/productFilter";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 import { useEffect } from "react";
-import { filterProducts } from "../../app/store/ui/categoryPage";
+import { initializeCategoryPage } from "../../app/store/ui/productFilterPage";
 
 export interface CategoriesProps {}
 
 export default function Categories(props: CategoriesProps) {
   const { [cateIdRouteParams]: cateId } = useParams();
   const dispatch = useAppDispatch();
+  const categoriesInit = useAppSelector(
+    (state) => state.ui.categoryPage.isCategoriesInit
+  );
   const categoryChildren = useAppSelector(getChildrenOfCateId(Number(cateId)));
   const path = useAppSelector(getPath(Number(cateId)));
-  const products = useAppSelector((state) => state.ui.categoryPage.products);
 
   useEffect(() => {
-    if (cateId) dispatch(filterProducts(Number(cateId), 1, 100));
-  }, [dispatch, cateId]);
+    const asyncFunc = async () => {
+      const cateIdInNumber = Number(cateId);
+
+      if (cateIdInNumber && categoryChildren) {
+        await dispatch(
+          initializeCategoryPage(cateIdInNumber, categoryChildren)
+        );
+      }
+    };
+
+    asyncFunc();
+  }, [dispatch, cateId, categoryChildren]);
 
   return (
     <Box>
       <ElevationHeader disableElevation />
-      {!categoryChildren ? (
+      {!categoryChildren && categoriesInit ? (
         <Outlet />
       ) : (
         <Box
@@ -43,10 +55,7 @@ export default function Categories(props: CategoriesProps) {
               {path && <CategoriesPath path={path} />}
             </Box>
             <Box sx={{ marginTop: 2 }}>
-              <ProductFilter
-                categories={categoryChildren}
-                products={products}
-              />
+              <ProductFilter />
             </Box>
           </Box>
         </Box>

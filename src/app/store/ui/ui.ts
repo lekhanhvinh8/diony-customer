@@ -5,6 +5,8 @@ import userPageReducer from "./userPage";
 import cartPageReducer from "./cart";
 import categoryPageReducer from "./categoryPage";
 import checkoutPageReducer from "./checkout";
+import purchasePageReducer from "./purchasePage";
+import productFilterPageReducer from "./productFilterPage";
 
 export default combineReducers({
   counter: counterReducer,
@@ -13,4 +15,6 @@ export default combineReducers({
   cartPage: cartPageReducer,
   categoryPage: categoryPageReducer,
   checkoutPage: checkoutPageReducer,
+  purchasePage: purchasePageReducer,
+  productFilterPage: productFilterPageReducer,
 });

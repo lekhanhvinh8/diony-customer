@@ -2,6 +2,52 @@
     "apiUrl": "http://localhost:5000/api/",
     "desktopWidth": 1366,
     "scrollBarWidth": 17,
-    "GHNtoken": "8abf528e-2bd1-11ec-ab03-e680cb72ac98"
-
+    "GHNtoken": "8abf528e-2bd1-11ec-ab03-e680cb72ac98",
+    "numberOfProductsPerFilterPage": 8,
+    "orderStatus": {
+        "all": {
+            "status": -1,
+            "tabName": "all",
+            "label": "Tất cả"
+        },
+        "unpaid": {
+            "statusCode": 0,
+            "tabName": "unpaid",
+            "label": "Chờ xác nhận"
+        },
+        "toShip": {
+            "statusCode": 1,
+            "tabName": "toShip",
+            "label": "Chờ lấy hàng"
+        },
+        "toPickup": {
+            "statusCode": 2,
+            "tabName": "toPickup",
+            "label": "Chờ lấy hàng"
+        },
+        "shipping": {
+            "statusCode": 3,
+            "tabName": "shipping",
+            "label": "Đang giao"
+        },
+        "shipped": {
+            "statusCode": 4,
+            "tabName": "shipped",
+            "label": "Đã giao"
+        },
+        "cancelled": {
+            "statusCode": 5,
+            "tabName": "cancelled",
+            "label": "Đã hủy"
+        }
+    },
+    "filterProvinces": [
+        {"provinceId": 201, "label": "Hà Nội"}, 
+        {"provinceId": 202, "label": "Tp. Hồ Chí Minh"}, 
+        {"provinceId": 203, "label": "Đà Nẵng"},
+        {"provinceId": 220, "label": "Cần Thơ"},
+        {"provinceId": 224, "label": "Hải Phòng"},
+        {"provinceId": 238, "label": "Quảng Trị"},
+        {"provinceId": null, "label": "Cả nước"}
+    ]
 }

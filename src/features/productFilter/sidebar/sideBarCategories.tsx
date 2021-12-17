@@ -11,26 +11,22 @@ export default function SideBarCategories({
 }: SideBarCategoriesProps) {
   return (
     <Box>
-      {categories.length !== 0 && (
-        <Box>
-          <Typography variant="h6">Danh mục</Typography>
-          <Box sx={{ marginTop: 1 }}>
-            {categories?.map((category) => (
-              <Box key={category.id} sx={{ marginTop: 1 }}>
-                <Link
-                  to={`/cate/${category.id}`}
-                  style={{
-                    textDecoration: "none",
-                    color: "inherit",
-                  }}
-                >
-                  {category.name}
-                </Link>
-              </Box>
-            ))}
+      <Typography variant="h6">Danh mục</Typography>
+      <Box sx={{ marginTop: 1 }}>
+        {categories?.map((category, index) => (
+          <Box key={category.id} sx={{ marginTop: index === 0 ? 0 : 1 }}>
+            <Link
+              to={`/cate/${category.id}`}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              {category.name}
+            </Link>
           </Box>
-        </Box>
-      )}
+        ))}
+      </Box>
     </Box>
   );
 }

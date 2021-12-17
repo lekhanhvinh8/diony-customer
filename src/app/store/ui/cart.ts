@@ -81,6 +81,9 @@ const slice = createSlice({
       page.cartGroupIndexes[groupIndex].cartItemIndexes[itemIndex].disabled =
         disabled;
     },
+    cartCleared: (page) => {
+      page.cartGroupIndexes = [];
+    },
   },
 });
 
@@ -91,6 +94,7 @@ const {
   itemIndexChecked,
   cartItemIndexRemoved,
   cartItemIndexDisabled,
+  cartCleared,
 } = slice.actions;
 export const { cartGroupIndexAdded, cartItemIndexAdded } = slice.actions;
 
@@ -208,6 +212,10 @@ export const enableItemIndex =
       );
     }
   };
+
+export const clearCartPage: AppThunk = (dispatch) => {
+  dispatch(cartCleared());
+};
 
 //selectors
 export const isGroupDisabled = (groupIndex: number) =>

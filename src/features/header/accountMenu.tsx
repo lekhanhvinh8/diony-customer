@@ -63,7 +63,7 @@ export default function AccountMenu({
             color: "inherit",
           }}
         >
-          My account
+          Tài khoản
         </Link>
       </MenuItem>
       <MenuItem>
@@ -71,13 +71,13 @@ export default function AccountMenu({
           <ArticleIcon />
         </ListItemIcon>
         <Link
-          to="/user/account"
+          to="/user/purchase"
           style={{
             textDecoration: "none",
             color: "inherit",
           }}
         >
-          My account
+          Đơn mua
         </Link>
       </MenuItem>
       <Divider />
@@ -90,7 +90,7 @@ export default function AccountMenu({
         <ListItemIcon>
           <Logout fontSize="small" />
         </ListItemIcon>
-        Logout
+        Đăng xuất
       </MenuItem>
     </Menu>
   );

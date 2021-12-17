@@ -1,20 +1,24 @@
-import { Divider, Stack, Box } from "@mui/material";
-import { Category } from "../../../app/models/category";
+import { Box } from "@mui/material";
+import { useAppSelector } from "../../../app/hooks";
 import SideBarCategories from "./sideBarCategories";
+import SideBarFilter from "./sideBarFilter";
 
-export interface CategorySideBarProps {
-  categories: Array<Category> | null;
-}
+export interface CategorySideBarProps {}
 
-const ProductSideBar = ({ categories }: CategorySideBarProps) => {
+const ProductSideBar = (props: CategorySideBarProps) => {
+  const categories = useAppSelector(
+    (state) => state.ui.productFilterPage.categoryChildren
+  );
+
   return (
     <Box>
-      <Stack divider={<Divider flexItem />} spacing={2}>
+      <Box>
         {categories && categories.length !== 0 && (
           <SideBarCategories categories={categories} />
         )}
-        <div>XYZ</div>
-      </Stack>
+
+        <SideBarFilter />
+      </Box>
     </Box>
   );
 };

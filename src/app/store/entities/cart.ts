@@ -60,6 +60,10 @@ const slice = createSlice({
         cartGroups.splice(groupIndex, 1);
       }
     },
+
+    cartCleared: (cartGroups) => {
+      return [];
+    },
   },
 });
 
@@ -71,6 +75,7 @@ const {
   cartRemoved,
   cartGroupAdded,
   cartItemAdded,
+  cartCleared,
 } = slice.actions;
 
 export const loadCart = (): AppThunk => async (dispatch, getState) => {
@@ -186,6 +191,10 @@ export const removeCart =
       } catch (ex) {}
     }
   };
+
+export const clearCartGroups: AppThunk = async (dispatch) => {
+  dispatch(cartCleared());
+};
 
 //selectors
 export const getNumberOfCartItems = createSelector(
