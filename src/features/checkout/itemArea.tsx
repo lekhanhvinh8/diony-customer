@@ -16,6 +16,7 @@ export default function ItemArea({ item }: ItemAreaProps) {
               <img
                 style={{ maxHeight: "100%", maxWidth: "100%" }}
                 src={item.avatarUrl}
+                alt="alt"
               ></img>
             </Box>
             <Box sx={{ width: "100%" }} display="flex" alignItems="center">

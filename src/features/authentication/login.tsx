@@ -1,17 +1,14 @@
 import {
   Avatar,
   Box,
-  Button,
   Checkbox,
   createTheme,
   CssBaseline,
   FormControlLabel,
   Grid,
   Paper,
-  TextField,
   Typography,
   Link,
-  CircularProgress,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -21,7 +18,6 @@ import { renderInput, validate } from "../../app/layouts/common/formUtil";
 import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { login } from "../../app/services/authService";
-import Toast from "react-toastify/dist/components";
 import { useAppDispatch } from "../../app/hooks";
 import { setUser } from "../../app/store/user";
 
@@ -74,7 +70,7 @@ export default function Login(props: LoginProps) {
 
       dispatch(setUser);
       navigate(state ? state.from.pathname : "/");
-    } catch (ex) {
+    } catch (ex: any) {
       if (ex.response && ex.response.status === 400) {
         const newErrors = { [emailAddressField]: "" };
         newErrors[emailAddressField] = ex.response.message;

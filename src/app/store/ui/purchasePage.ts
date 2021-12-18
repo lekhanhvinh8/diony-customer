@@ -71,7 +71,6 @@ export const reloadOrders =
     try {
       dispatch(ordersReloadingSet(true));
 
-      const statusCode = getStatusCode(selectedTab);
       let orders: Array<OrderGroup> = [];
 
       if (selectedTab === orderStatus.all.tabName) {

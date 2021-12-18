@@ -1,5 +1,5 @@
-import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Box, CircularProgress, Tab } from "@mui/material";
+import { TabContext, TabList } from "@mui/lab";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { reloadOrders, selectTab } from "../../../app/store/ui/purchasePage";
 import SearchBar from "./searchBar";

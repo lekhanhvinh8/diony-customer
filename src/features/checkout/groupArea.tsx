@@ -1,7 +1,6 @@
 import { Box, Grid, Stack, Typography, Divider } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { CartGroup } from "../../app/models/cart/cartGroup";
-import { CartGroupItem } from "../../app/models/cart/cartGroupItem";
 import { CartItemIndex } from "../../app/store/ui/cart";
 import { formatMoney } from "../../app/utils/formatMoney";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";

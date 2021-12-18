@@ -1,6 +1,5 @@
 import http from "./httpService";
 import { apiUrl } from "../../config.json";
-import { getUserId } from "./authService";
 import { CartGroupItem } from "../models/cart/cartGroupItem";
 import { CartGroup } from "../models/cart/cartGroup";
 

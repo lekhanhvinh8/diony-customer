@@ -3,18 +3,14 @@ import {
   Badge,
   Box,
   CssBaseline,
-  Divider,
   Grid,
   IconButton,
   Link,
   Toolbar,
-  Typography,
   useScrollTrigger,
-  Stack,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import DionysLogo from "../../app/layouts/images/DionysLogo10.png";
@@ -23,8 +19,6 @@ import { cloneElement, Fragment } from "react";
 import { useAppSelector } from "../../app/hooks";
 import AccountArea from "./accountArea";
 import { getNumberOfCartItems } from "../../app/store/entities/cart";
-
-const queryString = require("query-string");
 
 const useStyles = makeStyles({
   root: {

@@ -48,6 +48,6 @@
         {"provinceId": 220, "label": "Cần Thơ"},
         {"provinceId": 224, "label": "Hải Phòng"},
         {"provinceId": 238, "label": "Quảng Trị"},
-        {"provinceId": null, "label": "Cả nước"}
+        {"provinceId": 0, "label": "Cả nước"}
     ]
 }

@@ -1,10 +1,7 @@
 import { Box, Button } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  getCombinationId,
-  getPriceAndQuantity,
-} from "../../app/store/ui/productDetailPage";
+import { getPriceAndQuantity } from "../../app/store/ui/productDetailPage";
 import { addToCart } from "../../app/store/entities/cart";
 
 export interface AddToCartButtonProps {}
@@ -16,10 +13,6 @@ export default function AddToCartButton(props: AddToCartButtonProps) {
     (state) => state.ui.productDetailPage.selectedQuantity
   );
   const userId = useAppSelector((state) => state.user.userId);
-  const productId = useAppSelector(
-    (state) => state.ui.productDetailPage.productDetail.id
-  );
-  const combinationId = useAppSelector(getCombinationId);
 
   let productReadyToCart = true;
 

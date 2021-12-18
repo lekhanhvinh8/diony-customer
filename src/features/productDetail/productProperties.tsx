@@ -1,6 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { Fragment, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getPath } from "../../app/store/entities/categories";
 import { reloadProperties } from "../../app/store/ui/productDetailPage";

@@ -126,7 +126,6 @@ const slice = createSlice({
 export default slice.reducer;
 
 const {
-  productReloaded,
   pageReloaded,
   propertiesReloadded,
   variantValueSelected,

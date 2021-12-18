@@ -13,8 +13,7 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import address, {
-  getDefaultAddress,
+import {
   loadAddresses,
 } from "../../app/store/entities/address";
 import { useEffect, useState } from "react";

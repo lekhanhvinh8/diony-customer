@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { Route, Navigate, useLocation, Outlet } from "react-router-dom";
+import React from "react";
+import { Navigate, useLocation, Outlet } from "react-router-dom";
 import auth, {
   DecodeUser,
   roleCustomer,

@@ -35,7 +35,8 @@ export async function login(email: string, password: string) {
     email,
     password,
   });
-  if (data.roleName === "admin") throw "admin can not sign in in customer form";
+
+  if (data.roleName === "admin") return null;
 
   localStorage.setItem(jwtKeyName, data.token);
   localStorage.setItem(userIdKeyName, data.id);

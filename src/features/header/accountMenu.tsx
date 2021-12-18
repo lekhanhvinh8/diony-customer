@@ -1,5 +1,5 @@
 import { Logout } from "@mui/icons-material";
-import { Avatar, Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
+import {  Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { SetStateAction } from "react";
 import { Link } from "react-router-dom";
 import ArticleIcon from "@mui/icons-material/Article";

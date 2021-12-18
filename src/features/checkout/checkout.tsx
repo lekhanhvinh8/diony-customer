@@ -1,10 +1,4 @@
-import {
-  Backdrop,
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
 import ElevationScrollHeader from "../header/elevationHeader";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 import { useAppSelector } from "../../app/hooks";
@@ -14,16 +8,11 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import PaymentSelection from "./paymentSelection";
 import OrderArea from "./orderArea";
-import {
-  initializeCheckoutPage,
-  reloadShippingCostsAndExpectedDeliveryTimes,
-} from "../../app/store/ui/checkout";
-import { useNavigate } from "react-router";
+import { initializeCheckoutPage } from "../../app/store/ui/checkout";
 
 export interface CheckoutProps {}
 
 export default function Checkout(props: CheckoutProps) {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
   const cartPage = useAppSelector((state) => state.ui.cartPage);

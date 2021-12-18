@@ -9,7 +9,6 @@ import { useNavigate } from "react-router";
 import { clearCartGroups } from "../../app/store/entities/cart";
 import { clearCartPage } from "../../app/store/ui/cart";
 import { setOrderLoading } from "../../app/store/ui/checkout";
-import { group } from "console";
 
 export interface OrderAreaProps {}
 
@@ -159,10 +158,8 @@ export default function OrderArea(props: OrderAreaProps) {
               try {
                 if (selectedAddressId && cartItemIds.length !== 0) {
                   dispatch(setOrderLoading(true));
-                  const data = await createCODOrder(
-                    cartItemIds,
-                    selectedAddressId
-                  );
+
+                  await createCODOrder(cartItemIds, selectedAddressId);
 
                   dispatch(setOrderLoading(false));
                   dispatch(clearCartPage);

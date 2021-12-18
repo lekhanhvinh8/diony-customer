@@ -3,12 +3,11 @@ import {
   Box,
   Button,
   DialogActions,
-  Stack,
   TextField,
 } from "@mui/material";
 import { Formik } from "formik";
 import Joi from "joi";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   handleInputChangeFormik,
@@ -58,7 +57,6 @@ export interface AddressFormProps {}
 export default function AddressForm(props: AddressFormProps) {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<{ [key: string]: any }>({});
-  const address = useAppSelector((state) => state.entities.address);
   const addressPage = useAppSelector((state) => state.ui.userPage.addressPage);
   const userId = useAppSelector((state) => state.user.userId);
   const openFormForUpdate = useAppSelector(
@@ -102,7 +100,7 @@ export default function AddressForm(props: AddressFormProps) {
     };
 
     asyncFunc();
-  }, [dispatch]);
+  }, [dispatch, openFormForUpdate, updatedAddress]);
 
   const initialValues: FormValues =
     openFormForUpdate && updatedAddress

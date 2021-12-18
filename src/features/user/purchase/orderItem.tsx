@@ -22,6 +22,7 @@ export default function OrderItem({ item }: OrderItemProps) {
             maxHeight: "80px",
           }}
           src={item.itemAvatarUrl}
+          alt="Ảnh lỗi"
         />
         <Box sx={{ ml: 2, width: "100%" }}>
           <Typography fontSize={17} color="#000000">

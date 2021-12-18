@@ -1,15 +1,4 @@
-import * as React from "react";
-import {
-  Box,
-  Grid,
-  Button,
-  Typography,
-  Divider,
-  Stack,
-  Rating,
-} from "@mui/material";
-import { Fragment } from "react";
-import { Link } from "react-router-dom";
+import { Box, Grid, Button } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   calculatePriceAndQuantity,

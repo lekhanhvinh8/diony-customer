@@ -21,10 +21,10 @@ export default function SideBarAddresses(props: SideBarAddressesProps) {
       <Typography fontSize={17}>Theo nơi bán</Typography>
       <Box sx={{ mt: 1 }}>
         <RadioGroup
-          value={selectedProvinceId}
+          value={selectedProvinceId === null ? 0 : selectedProvinceId}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             const value = Number(event.target.value);
-            dispatch(selectFilterProvince(value ? value : null));
+            dispatch(selectFilterProvince(value === 0 ? null : value));
           }}
         >
           {filterProvinces.map((province) => {

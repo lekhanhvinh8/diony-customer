@@ -33,7 +33,11 @@ export default function PaymentSelection(props: PaymentSelectionProps) {
             control={<Radio />}
             label={
               <Box display="flex" alignItems="center">
-                <img style={{ width: 32, height: 32 }} src={codMethodPayment} />
+                <img
+                  style={{ width: 32, height: 32 }}
+                  src={codMethodPayment}
+                  alt="alt"
+                />
                 <Typography sx={{ ml: 2 }}>
                   Thanh toán bằng tiền mặt khi nhận hàng
                 </Typography>
@@ -49,6 +53,7 @@ export default function PaymentSelection(props: PaymentSelectionProps) {
                 <img
                   style={{ width: 32, height: 32 }}
                   src={paypalMothodPayment}
+                  alt="alt"
                 />
                 <Typography sx={{ ml: 2 }}>Thanh toán bằng paypal</Typography>
               </Box>

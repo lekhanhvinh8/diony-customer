@@ -8,8 +8,6 @@ import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 export interface UserProps {}
 
 export default function User(props: UserProps) {
-  const array = [...Array(100)];
-
   return (
     <Box>
       <ElevationScrollHeader disableElevation />

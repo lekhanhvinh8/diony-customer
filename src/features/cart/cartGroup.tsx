@@ -11,7 +11,6 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   checkCartGroup,
   checkCartItem,
-  isAllItemChecked,
   isGroupChecked,
   isGroupDisabled,
   removeItemIndex,
@@ -41,8 +40,8 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
       cartPage.cartGroupIndexes[cartGroupIndex]?.cartItemIndexes[itemIndex]
         ?.disabled;
 
-    //bugs => must create a isDisabled in store
-    if (cartGroup.items[itemIndex].amount == 0) isDisabled = true;
+    //bug => must create a isDisabled in store
+    if (cartGroup.items[itemIndex].amount === 0) isDisabled = true;
 
     if (isDisabled) return true;
 
@@ -99,6 +98,7 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
                 <img
                   style={{ maxHeight: "100%", maxWidth: "100%" }}
                   src={item.avatarUrl}
+                  alt="alt"
                 ></img>
               </Box>
               <Box sx={{ width: 350 }}>

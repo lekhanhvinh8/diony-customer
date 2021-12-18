@@ -81,7 +81,6 @@ const {
   deliveryTimeReloadded,
   shippingCostReloadded,
   pageReloadingSet,
-  orderLoadingSet: orderLoaddingSet,
 } = slice.actions;
 
 //selectors

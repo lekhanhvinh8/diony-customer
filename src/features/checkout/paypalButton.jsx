@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 
 import { clearCartPage } from "./../../app/store/ui/cart";
 import { clearCartGroups } from "./../../app/store/entities/cart";

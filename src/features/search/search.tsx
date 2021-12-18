@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 
 import ElevationHeader from "../header/elevationHeader";
 import ProductFilter from "../productFilter/productFilter";

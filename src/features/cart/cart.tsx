@@ -12,7 +12,6 @@ export interface CartProps {}
 export default function Cart(props: CartProps) {
   const dispatch = useAppDispatch();
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
-  const cartPage = useAppSelector((state) => state.ui.cartPage);
   const allChecked = useAppSelector(isAllChecked);
   const allDisabled = useAppSelector(isAllDisabled);
 

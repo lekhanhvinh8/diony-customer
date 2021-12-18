@@ -8,7 +8,6 @@ import {
   FormControlLabel,
   Grid,
   Paper,
-  TextField,
   Typography,
   Link,
   Backdrop,
@@ -16,14 +15,11 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Joi, { ValidationErrorFunction } from "joi";
+import Joi from "joi";
 import { renderInput, validate } from "../../app/layouts/common/formUtil";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { register, UserRegister } from "../../app/services/authService";
 import { toast } from "react-toastify";
-
-const queryString = require("query-string");
 
 const theme = createTheme();
 
@@ -82,9 +78,6 @@ export default function SignUp(props: SignUpProps) {
 
   const [backdropOpen, setBackdropOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

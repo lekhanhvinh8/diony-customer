@@ -9,7 +9,7 @@ import {
 
 import { makeStyles } from "@mui/styles";
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { useAppDispatch } from "../../../app/hooks";
 import { applyPriceRange } from "../../../app/store/ui/productFilterPage";
 
 const useStyles = makeStyles({

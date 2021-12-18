@@ -1,6 +1,5 @@
-import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { formatMoney } from "../../app/utils/formatMoney";
+import { Box, Grid, Typography } from "@mui/material";
+import { useAppSelector } from "../../app/hooks";
 import GroupArea from "./groupArea";
 
 export interface ItemsCheckoutProps {}

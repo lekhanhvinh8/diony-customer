@@ -2,11 +2,9 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getPath } from "../../app/store/entities/categories";
-import productDetailPage, {
-  calculatePriceAndQuantity,
+import {
   getProductDetail,
   reloadProductDetailPage,
-  resetSelectedQuantity,
 } from "../../app/store/ui/productDetailPage";
 import CategoriesPath from "../category/categoriesPath";
 import ElevationScrollHeader from "../header/elevationHeader";
@@ -44,7 +42,7 @@ export default function ProductDetail(props: ProductDetailProps) {
     };
 
     asyncFunc();
-  }, [dispatch]);
+  }, [dispatch, navigate, params.productId]);
 
   const array = [...Array(10)];
 

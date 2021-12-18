@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import * as React from "react";
 import Carousel from "react-multi-carousel";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -55,7 +54,7 @@ export default function ProductImages(props: ProductImagesProps) {
             }}
           >
             <a
-              href="#"
+              href="/#"
               onClick={(e) => {
                 e.preventDefault();
                 dispatch(selectImageUrl(url));
@@ -67,6 +66,7 @@ export default function ProductImages(props: ProductImagesProps) {
                   maxHeight: "100%",
                 }}
                 src={url}
+                alt="ALT"
               />
             </a>
           </Box>
@@ -93,6 +93,7 @@ export default function ProductImages(props: ProductImagesProps) {
             maxHeight: "100%",
           }}
           src={selectedImageUrl}
+          alt="ALT"
         />
       </Box>
 

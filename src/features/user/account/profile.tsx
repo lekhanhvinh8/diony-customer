@@ -5,9 +5,7 @@ import {
   Button,
   CircularProgress,
   Divider,
-  FormControl,
   FormControlLabel,
-  FormGroup,
   Grid,
   Radio,
   RadioGroup,
@@ -78,7 +76,7 @@ export default function Profile(props: ProfileProps) {
                   <TextField
                     size="small"
                     fullWidth
-                    value={profilePage.name}
+                    value={profilePage.name || ""}
                     onChange={(e) => {
                       dispatch(setName(e.currentTarget.value));
                     }}
@@ -99,7 +97,7 @@ export default function Profile(props: ProfileProps) {
                   <TextField
                     size="small"
                     fullWidth
-                    value={profilePage.shopName}
+                    value={profilePage.shopName || ""}
                     onChange={(e) => {
                       dispatch(setShopName(e.currentTarget.value));
                     }}
