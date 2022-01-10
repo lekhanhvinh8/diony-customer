@@ -123,7 +123,7 @@ export const getCategoryFather = (
   return null;
 };
 
-const getLeafs = (category: Category): Array<Category> => {
+export const getLeafs = (category: Category): Array<Category> => {
   if (category.children.length === 0) return [category];
 
   let leafs: Array<Category> = [];

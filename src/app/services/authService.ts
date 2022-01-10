@@ -36,7 +36,7 @@ export async function login(email: string, password: string) {
     password,
   });
 
-  if (data.roleName === "admin") return null;
+  if (data.roleName === "Admin") return null;
 
   localStorage.setItem(jwtKeyName, data.token);
   localStorage.setItem(userIdKeyName, data.id);

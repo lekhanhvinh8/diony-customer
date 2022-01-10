@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { orderStatus } from "../../../config.json";
-import { getAllOrders } from "../../services/orderService";
+import { getAllOrders, getFilteredOrders } from "../../services/orderService";
+import { number } from "joi";
+
+export const defaultPageSize = 5;
 
 export interface OrderGroup {
   id: number;
@@ -29,12 +32,20 @@ interface PurchasePageStore {
   selectedTab: string;
   orders: Array<OrderGroup>;
   ordersReloading: boolean;
+  pageNumber: number;
+  pageSize: number;
+  searchKey: string;
+  totalOrders: number;
 }
 
 const initialState: PurchasePageStore = {
-  selectedTab: "all",
+  selectedTab: orderStatus.all.tabName,
   orders: [],
   ordersReloading: false,
+  pageNumber: 0,
+  pageSize: defaultPageSize,
+  searchKey: "",
+  totalOrders: 0,
 };
 
 const slice = createSlice({
@@ -52,12 +63,28 @@ const slice = createSlice({
     ordersReloadingSet: (page, action: PayloadAction<boolean>) => {
       page.ordersReloading = action.payload;
     },
+    totalOrdersSet: (page, action: PayloadAction<number>) => {
+      page.totalOrders = action.payload;
+    },
+    pageSelected: (page, action: PayloadAction<number>) => {
+      page.pageNumber = action.payload;
+    },
+    searchKeyChanged: (page, action: PayloadAction<string>) => {
+      page.searchKey = action.payload;
+    },
   },
 });
 
 export default slice.reducer;
 
-const { tabSelected, ordersReloaded, ordersReloadingSet } = slice.actions;
+const {
+  tabSelected,
+  ordersReloaded,
+  ordersReloadingSet,
+  totalOrdersSet,
+  pageSelected,
+  searchKeyChanged,
+} = slice.actions;
 
 export const selectTab =
   (tabValue: string): AppThunk =>
@@ -65,23 +92,40 @@ export const selectTab =
     dispatch(tabSelected(tabValue));
   };
 
-export const reloadOrders =
-  (selectedTab: string): AppThunk =>
-  async (dispatch) => {
-    try {
-      dispatch(ordersReloadingSet(true));
+export const reloadOrders = (): AppThunk => async (dispatch, getState) => {
+  const { pageSize, pageNumber, searchKey, selectedTab } =
+    getState().ui.purchasePage;
 
-      let orders: Array<OrderGroup> = [];
+  try {
+    dispatch(ordersReloadingSet(true));
 
-      if (selectedTab === orderStatus.all.tabName) {
-        orders = await getAllOrders();
-      }
+    const statusCode = getStatusCode(selectedTab);
 
-      dispatch(ordersReloadingSet(false));
-      dispatch(ordersReloaded(orders));
-    } catch (ex) {
-      dispatch(ordersReloadingSet(false));
-    }
+    const { orderGroups: orders, totalOrders } = await getFilteredOrders(
+      pageSize,
+      pageNumber,
+      searchKey,
+      statusCode
+    );
+
+    dispatch(ordersReloadingSet(false));
+    dispatch(ordersReloaded(orders));
+    dispatch(totalOrdersSet(totalOrders));
+  } catch (ex) {
+    dispatch(ordersReloadingSet(false));
+  }
+};
+
+export const selectPageNumber =
+  (pageNumber: number): AppThunk =>
+  (dispatch) => {
+    dispatch(pageSelected(pageNumber));
+  };
+
+export const changeSearchKey =
+  (searchKey: string): AppThunk =>
+  (dispatch) => {
+    dispatch(searchKeyChanged(searchKey));
   };
 
 //helper

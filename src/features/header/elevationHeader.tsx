@@ -75,8 +75,8 @@ function Header(props: HeaderProps) {
       <ElevationScroll>
         <AppBar position="sticky">
           <Box display="flex" justifyContent="center" alignItems="center">
-            <Box sx={{ width: "94%" }}>
-              <Toolbar>
+            <Box sx={{ width: "90%" }}>
+              <Box display="flex" width="100%" alignItems="center">
                 <Link
                   href="#"
                   sx={{ flexGrow: 1 }}
@@ -95,10 +95,9 @@ function Header(props: HeaderProps) {
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
-
                 <AccountArea />
-              </Toolbar>
-              <Toolbar>
+              </Box>
+              <Box display="flex" width="100%" alignItems="center">
                 <Grid container sx={{ flexGrow: 1 }}>
                   <Grid item xs={2}>
                     <RouteLink to="/">
@@ -124,7 +123,7 @@ function Header(props: HeaderProps) {
                     <ShoppingCartIcon fontSize="large" />
                   </Badge>
                 </IconButton>
-              </Toolbar>
+              </Box>
             </Box>
           </Box>
         </AppBar>

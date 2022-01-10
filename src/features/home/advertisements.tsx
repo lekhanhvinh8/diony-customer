@@ -11,11 +11,16 @@ import { Grid, Stack } from "@mui/material";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
+const rigthImage1Url =
+  "https://res.cloudinary.com/docbzd7l8/image/upload/v1641615921/382644b33fc42835b0edfb11f203def5_xhdpi_xshkra.png";
+const rightImage2Url =
+  "https://res.cloudinary.com/docbzd7l8/image/upload/v1641615968/778970c98d3527e1f32bd2a51497f8e2_xhdpi_ikpjmq.png";
+
 const images = [
   {
     label: "San Francisco – Oakland Bay Bridge, United States",
     imgPath:
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1636440978/banner3_vcq11d.jpg",
+      "https://res.cloudinary.com/docbzd7l8/image/upload/v1641616512/1ff9a5f29989d864eb2ae576dd427c81_xxhdpi_k9of0t.png",
   },
   {
     label: "Bird",
@@ -25,12 +30,22 @@ const images = [
   {
     label: "Bali, Indonesia",
     imgPath:
-      "https://res.cloudinary.com/docbzd7l8/image/upload/v1636440978/baner2_m0v2ix.png",
+      "https://res.cloudinary.com/docbzd7l8/image/upload/v1641616565/536724910bf560fe6cb8c3984ba8f42d_xxhdpi_fukhcp.png",
   },
   {
     label: "Goč, Serbia",
     imgPath:
       "https://res.cloudinary.com/docbzd7l8/image/upload/v1636440978/banner4_goxgpt.png",
+  },
+  {
+    label: "image",
+    imgPath:
+      "https://res.cloudinary.com/docbzd7l8/image/upload/v1641616593/8c41dfbac5340cef175fb793b24d86c3_xxhdpi_r872o7.jpg",
+  },
+  {
+    label: "image",
+    imgPath:
+      "https://res.cloudinary.com/docbzd7l8/image/upload/v1641616613/7d8291c3c5b6a4b5861ddd5bb1805002_xxhdpi_qlvpkz.png",
   },
 ];
 
@@ -125,24 +140,20 @@ export default function Advertisements(props: AdvertisementsProps) {
         <Grid item xs={4}>
           <Stack>
             <img
-              src={
-                "https://res.cloudinary.com/docbzd7l8/image/upload/v1636441540/sbanner1_q1njez.png"
-              }
+              src={rigthImage1Url}
               alt={"Error"}
               style={{
-                maxWidth: 418,
-                height: 150,
+                maxWidth: 398,
+                height: 115,
               }}
             />
             <img
-              src={
-                "https://res.cloudinary.com/docbzd7l8/image/upload/v1636441540/sbanner2_wyj9kf.png"
-              }
+              src={rightImage2Url}
               alt="Error"
               style={{
-                maxWidth: 418,
-                marginTop: 3,
-                height: 150,
+                maxWidth: 389,
+                marginTop: 25,
+                height: 115,
               }}
             />
           </Stack>

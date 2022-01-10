@@ -3,12 +3,14 @@ import { Box, Typography, Button } from "@mui/material";
 import OrderItem from "./orderItem";
 import { formatMoney } from "../../../app/utils/formatMoney";
 import StoreIcon from "@mui/icons-material/Store";
+import { useNavigate } from "react-router-dom";
 
 export interface OrderGroupProps {
   order: OrderGroupType;
 }
 
 export default function OrderGroup({ order }: OrderGroupProps) {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -49,11 +51,18 @@ export default function OrderGroup({ order }: OrderGroupProps) {
             color="red"
             sx={{ ml: 1 }}
           >
-            {formatMoney(order.total) + "đ"}
+            {formatMoney(order.total + order.shippingCost) + "đ"}
           </Typography>
         </Box>
         <Box sx={{ mt: 2 }}>
-          <Button variant="outlined" fullWidth color="secondary">
+          <Button
+            variant="outlined"
+            fullWidth
+            color="secondary"
+            onClick={() => {
+              navigate("/user/order/" + order.id);
+            }}
+          >
             Chi tiết đơn hàng
           </Button>
         </Box>

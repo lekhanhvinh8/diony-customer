@@ -15,20 +15,18 @@ export default function Home(props: HomeProps) {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      sx={{ bgcolor: darkBackgroundColor }}
+      sx={{ bgcolor: darkBackgroundColor, pb: 2 }}
     >
       <Box sx={{ width: "90%" }}>
-        <Box sx={{ marginTop: 4 }}>
+        <Box sx={{ marginTop: 3 }}>
           <Advertisements />
         </Box>
 
-        <Box sx={{ marginTop: 4, bgcolor: "#ffffff" }}>
+        <Box sx={{ marginTop: 3, bgcolor: "#ffffff" }}>
           <SliderCategories />
         </Box>
 
-        <Box sx={{ marginTop: 4 }}>
-          <Advertisements />
-          <Advertisements />
+        <Box sx={{ marginTop: 3 }}>
           <Advertisements />
         </Box>
       </Box>

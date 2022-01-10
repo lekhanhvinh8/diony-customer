@@ -1,10 +1,15 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ProductDetail } from "../../models/productDetail";
+import { ProductCard } from "../../models/productCard";
+import { ProductDetail, ProductRating } from "../../models/productDetail";
+import { getRelatedProducts } from "../../services/productFilterService";
 import { AppThunk, RootState } from "../store";
 import {
   getProductDetail as getProductDetailService,
   getProductProperties,
+  getRatings,
 } from "./../../services/productService";
+
+export const defaultPageSize = 3;
 
 export interface SelectedVariantValue {
   variantId: number;
@@ -31,6 +36,11 @@ export interface ProductDetailPage {
   productQuantity: number | null;
   selectedQuantity: number;
   selectedImageUrl: string;
+  ratings: Array<ProductRating>;
+  ratingPageSize: number;
+  ratingPageNumber: number;
+  totalRatings: number;
+  relatedProducts: Array<ProductCard>;
 }
 
 const initialState: ProductDetailPage = {
@@ -56,6 +66,11 @@ const initialState: ProductDetailPage = {
     variants: [],
     variantValueInfos: [],
   },
+  ratings: [],
+  relatedProducts: [],
+  ratingPageSize: defaultPageSize,
+  ratingPageNumber: 0,
+  totalRatings: 0,
 };
 
 const slice = createSlice({
@@ -120,6 +135,21 @@ const slice = createSlice({
 
       page.selectedImageUrl = selectedImageUrl;
     },
+    ratingsReloaded: (page, action: PayloadAction<Array<ProductRating>>) => {
+      page.ratings = action.payload;
+    },
+    ratingPageSelected: (page, action: PayloadAction<number>) => {
+      page.ratingPageNumber = action.payload;
+    },
+    totalRatingsSet: (page, action: PayloadAction<number>) => {
+      page.totalRatings = action.payload;
+    },
+    relatedProductsLoadded: (
+      page,
+      action: PayloadAction<Array<ProductCard>>
+    ) => {
+      page.relatedProducts = action.payload;
+    },
   },
 });
 
@@ -132,6 +162,10 @@ const {
   priceAndQuantityCalculated,
   selectedQuantitySet,
   imageSelected,
+  ratingsReloaded,
+  ratingPageSelected,
+  totalRatingsSet,
+  relatedProductsLoadded,
 } = slice.actions;
 
 //selectors
@@ -283,4 +317,34 @@ export const selectImageUrl =
   (imageUrl: string): AppThunk =>
   (dispatch) => {
     dispatch(imageSelected(imageUrl));
+  };
+
+export const reloadRatings =
+  (productId: number): AppThunk =>
+  async (dispatch, getState) => {
+    const { ratingPageSize, ratingPageNumber } =
+      getState().ui.productDetailPage;
+
+    if (productId !== 0) {
+      const { ratings, totalRatings } = await getRatings(
+        productId,
+        ratingPageSize,
+        ratingPageNumber
+      );
+      dispatch(ratingsReloaded(ratings));
+      dispatch(totalRatingsSet(totalRatings));
+    }
+  };
+
+export const selectRatingPageNumber =
+  (pageNumber: number): AppThunk =>
+  async (dispatch) => {
+    dispatch(ratingPageSelected(pageNumber));
+  };
+
+export const loadRelatedProducts =
+  (productId: number, numberOfProducts: number): AppThunk =>
+  async (dispatch) => {
+    const products = await getRelatedProducts(productId, numberOfProducts);
+    dispatch(relatedProductsLoadded(products));
   };

@@ -3,7 +3,7 @@ import { ProductCard } from "../models/productCard";
 import http from "./httpService";
 import { numberOfProductsPerFilterPage } from "../../config.json";
 
-const apiEndpoint = apiUrl + "productFilter";
+const apiEndpoint = apiUrl + "productFilter/";
 
 export interface filterRequestParams {
   pageNumber: number;
@@ -55,4 +55,32 @@ export const filter = async (params: filterRequestParams) => {
   const totalProducts: number = data.totalProducts;
 
   return { products, totalProducts };
+};
+
+export const getRelatedProducts = async (
+  productId: number,
+  numberOfProducts: number
+) => {
+  const { data } = await http.get(apiEndpoint + "RelatedProducts", {
+    params: {
+      productId,
+      numberOfProducts,
+    },
+  });
+
+  const products: Array<ProductCard> = data.map((element: any) => {
+    const product: ProductCard = {
+      id: element.id,
+      name: element.name,
+      avatarUrl: element.coverImage,
+      starRate: element.starRate,
+      quantitySold: element.quantitySold,
+      price: element.price,
+      shopAddressProvince: element.province,
+    };
+
+    return product;
+  });
+
+  return products;
 };

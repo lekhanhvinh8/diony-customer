@@ -1,6 +1,6 @@
 import http from "./httpService";
 import { apiUrl } from "../../config.json";
-import { ProductDetail } from "../models/productDetail";
+import { ProductDetail, ProductRating } from "../models/productDetail";
 import { ProductVariant, VariantValueInfo } from "../models/productVariant";
 import { ProductCard } from "./../models/productCard";
 import {
@@ -117,4 +117,23 @@ export const getFilteredProductOfCategory = async (
   });
 
   return products;
+};
+
+export const getRatings = async (
+  productId: number,
+  pageSize = 1,
+  pageNumber = 0
+) => {
+  const { data } = await http.get<{
+    ratings: Array<ProductRating>;
+    totalRatings: number;
+  }>(apiEndpoint + "/ratings", {
+    params: {
+      productId,
+      pageSize,
+      pageNumber,
+    },
+  });
+  const { ratings, totalRatings } = data;
+  return { ratings, totalRatings };
 };

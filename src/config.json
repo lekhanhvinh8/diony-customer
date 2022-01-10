@@ -6,39 +6,44 @@
     "numberOfProductsPerFilterPage": 8,
     "orderStatus": {
         "all": {
-            "status": -1,
+            "statusCode": null,
             "tabName": "all",
             "label": "Tất cả"
         },
-        "unpaid": {
-            "statusCode": 0,
-            "tabName": "unpaid",
+        "pending": {
+            "statusCode": "PENDING_APPROVAL",
+            "tabName": "pending",
             "label": "Chờ xác nhận"
         },
-        "toShip": {
-            "statusCode": 1,
-            "tabName": "toShip",
-            "label": "Chờ lấy hàng"
+        "toPrepare": {
+            "statusCode": "TO_PREPARE",
+            "tabName": "toPrepare",
+            "label": "Đang chuẩn bị",
+            "step": "Đã xác nhận"
         },
         "toPickup": {
-            "statusCode": 2,
+            "statusCode": "TO_PICKUP",
             "tabName": "toPickup",
-            "label": "Chờ lấy hàng"
+            "label": "Chờ lấy hàng",
+            "step": "Đã chuẩn bị hàng"
         },
         "shipping": {
-            "statusCode": 3,
+            "statusCode": "SHIPPING",
             "tabName": "shipping",
-            "label": "Đang giao"
+            "label": "Đang giao",
+            "step": "Shipper đã lấy hàng"
         },
         "shipped": {
-            "statusCode": 4,
+            "statusCode": "SHIPPED",
             "tabName": "shipped",
-            "label": "Đã giao"
+            "label": "Đã giao",
+            "step": "Đã giao hàng"
         },
         "cancelled": {
-            "statusCode": 5,
+            "statusCode": "CANCELLED",
             "tabName": "cancelled",
-            "label": "Đã hủy"
+            "label": "Đã hủy",
+            "step": "Đơn hàng đã hủy"
         }
     },
     "filterProvinces": [
@@ -49,5 +54,16 @@
         {"provinceId": 224, "label": "Hải Phòng"},
         {"provinceId": 238, "label": "Quảng Trị"},
         {"provinceId": 0, "label": "Cả nước"}
+    ],
+    "paymentMethod": {
+        "paypal": "PAYPAL",
+        "cod": "COD"
+    },
+    "cancelledReasons": [
+        {"id": 1, "reason": "Muốn thay đổi sản phẩm trong đơn hàng"},
+        {"id": 2, "reason": "Thủ tục thanh toán quá rắc rối"},
+        {"id": 3, "reason": "Tìm thấy giá rẻ hơn ở chỗ khác"},
+        {"id": 4, "reason": "Đổi ý không muốn mua nữa"},
+        {"id": 5, "reason": "Khác"}
     ]
 }

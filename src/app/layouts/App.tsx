@@ -24,9 +24,11 @@ import { initializePage } from "../store/ui/cart";
 import { loadCart } from "../store/entities/cart";
 import { setCategoriesInit } from "../store/ui/categoryPage";
 import Search from "../../features/search/search";
+import OrderDetail from "../../features/orderDetail/orderDetail";
 
 export const cateIdRouteParams = "cateId";
 export const productIdRouteParams = "productId";
+export const orderIdParams = "orderId";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -82,6 +84,7 @@ function App() {
               <Route path="address" element={<Address />} />
             </Route>
             <Route path="purchase/*" element={<Purchase />} />
+            <Route path={"order/:" + orderIdParams} element={<OrderDetail />} />
           </Route>
         </Route>
         <Route path="/test" element={<Test />} />

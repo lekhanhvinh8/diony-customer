@@ -15,3 +15,13 @@ export interface ProductDetail {
   variants: Array<ProductVariant>;
   variantValueInfos: Array<VariantValueInfo>;
 }
+
+export interface ProductRating {
+  id: number;
+  createdAt: string;
+  stars: number;
+  content: string;
+  orderItemId: number;
+  customerEmail: string;
+  customerAvatarUrl: string;
+}

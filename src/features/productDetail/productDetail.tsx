@@ -5,6 +5,7 @@ import { getPath } from "../../app/store/entities/categories";
 import {
   getProductDetail,
   reloadProductDetailPage,
+  reloadRatings,
 } from "../../app/store/ui/productDetailPage";
 import CategoriesPath from "../category/categoriesPath";
 import ElevationScrollHeader from "../header/elevationHeader";
@@ -17,6 +18,9 @@ import { useEffect } from "react";
 import AddToCartButton from "./addToCartButton";
 import PropductProperties from "./productProperties";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
+import ProductRatings from "./productRatings";
+import Footer from "../footer/footer";
+import RelatedProducts from "./relatedProducts";
 
 export interface ProductDetailProps {}
 
@@ -111,14 +115,28 @@ export default function ProductDetail(props: ProductDetailProps) {
             </Box>
           </Box>
 
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={{ mt: 2 }}>
             <Box sx={{ bgcolor: "#ffffff" }}>
-              {array.map((e, index) => (
-                <Box key={index}>ABC</Box>
-              ))}
+              <Box sx={{ padding: 2 }}>
+                <ProductRatings />
+              </Box>
+            </Box>
+          </Box>
+
+          <Box sx={{ mt: 2 }}>
+            <Box>
+              <Box>
+                <RelatedProducts />
+              </Box>
             </Box>
           </Box>
         </Box>
+      </Box>
+
+      <Box sx={{ bgcolor: darkBackgroundColor, height: 20 }}></Box>
+
+      <Box sx={{ mt: 1 }}>
+        <Footer />
       </Box>
     </Box>
   );
