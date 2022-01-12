@@ -14,7 +14,7 @@ import ProductTitle from "./productTitle";
 import ProductPrice from "./productPrice";
 import ProductVariants from "./productVariants";
 import ProductQuantity from "./productQuantity";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import AddToCartButton from "./addToCartButton";
 import PropductProperties from "./productProperties";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
@@ -25,6 +25,7 @@ import RelatedProducts from "./relatedProducts";
 export interface ProductDetailProps {}
 
 export default function ProductDetail(props: ProductDetailProps) {
+  const topPageRef = useRef(null);
   const params = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ export default function ProductDetail(props: ProductDetailProps) {
 
   return (
     <Box>
+      <div ref={topPageRef} />
       <ElevationScrollHeader disableElevation />
       <Box
         display="flex"
@@ -85,7 +87,7 @@ export default function ProductDetail(props: ProductDetailProps) {
                     <ProductPrice />
                     <ProductVariants />
                     <ProductQuantity />
-                    <AddToCartButton />
+                    <AddToCartButton topPageRef={topPageRef} />
                   </Box>
                 </Box>
               </Grid>

@@ -84,3 +84,57 @@ export const getRelatedProducts = async (
 
   return products;
 };
+
+export const getViewedProducts = async (numberOfProducts: number) => {
+  const { data } = await http.get(apiEndpoint + "LastViewedProducts", {
+    params: {
+      numberOfProducts,
+    },
+  });
+
+  const products: Array<ProductCard> = data.map((element: any) => {
+    const product: ProductCard = {
+      id: element.id,
+      name: element.name,
+      avatarUrl: element.coverImage,
+      starRate: element.starRate,
+      quantitySold: element.quantitySold,
+      price: element.price,
+      shopAddressProvince: element.province,
+    };
+
+    return product;
+  });
+
+  return products;
+};
+
+export const getRecommendedProducts = async (
+  pageSize: number = 1,
+  pageNumber: number = 0
+) => {
+  const { data } = await http.get(apiEndpoint + "RecommendedProducts", {
+    params: {
+      pageSize,
+      pageNumber,
+    },
+  });
+
+  const { products: productsFromData, totalProducts } = data;
+
+  const products: Array<ProductCard> = productsFromData.map((element: any) => {
+    const product: ProductCard = {
+      id: element.id,
+      name: element.name,
+      avatarUrl: element.coverImage,
+      starRate: element.starRate,
+      quantitySold: element.quantitySold,
+      price: element.price,
+      shopAddressProvince: element.province,
+    };
+
+    return product;
+  });
+
+  return { products, totalProducts };
+};

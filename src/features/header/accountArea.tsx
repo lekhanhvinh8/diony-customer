@@ -1,8 +1,9 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { Divider, IconButton, Stack, Typography } from "@mui/material";
-import { Fragment, useState } from "react";
+import { Divider, IconButton, Stack, Typography, Avatar } from "@mui/material";
+import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { reloadProfilePage } from "../../app/store/ui/userPage";
 import AccountMenu from "./accountMenu";
 
 const queryString = require("query-string");
@@ -10,12 +11,23 @@ const queryString = require("query-string");
 export interface AccountAreaProps {}
 
 export default function AccountArea(props: AccountAreaProps) {
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.decodeUser);
+  const userId = useAppSelector((state) => state.user.userId);
+  const profilePage = useAppSelector((state) => state.ui.userPage.profilePage);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     setAnchorEl(event.currentTarget);
   };
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      await dispatch(reloadProfilePage);
+    };
+
+    asyncFunc();
+  }, [dispatch, userId]);
 
   return (
     <Fragment>
@@ -28,7 +40,13 @@ export default function AccountArea(props: AccountAreaProps) {
             aria-haspopup="true"
             color="inherit"
           >
-            <AccountCircle />
+            <Avatar
+              src={
+                profilePage.avatarUrl && !profilePage.avatarUploading
+                  ? profilePage.avatarUrl
+                  : ""
+              }
+            ></Avatar>
           </IconButton>
 
           <Link

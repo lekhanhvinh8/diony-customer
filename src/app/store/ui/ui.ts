@@ -8,6 +8,7 @@ import checkoutPageReducer from "./checkout";
 import purchasePageReducer from "./purchasePage";
 import productFilterPageReducer from "./productFilterPage";
 import orderDetailPageReducer from "./orderDetailPage";
+import homePageReducer from "./homePage";
 
 export default combineReducers({
   counter: counterReducer,
@@ -19,4 +20,5 @@ export default combineReducers({
   purchasePage: purchasePageReducer,
   productFilterPage: productFilterPageReducer,
   orderDetailPage: orderDetailPageReducer,
+  homePage: homePageReducer,
 });

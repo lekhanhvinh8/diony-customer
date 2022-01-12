@@ -9,6 +9,7 @@ import {
 import CategoriesPath from "./categoriesPath";
 import ElevationHeader from "../header/elevationHeader";
 import ProductFilter from "../productFilter/productFilter";
+import Footer from "../footer/footer";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 import { useEffect } from "react";
 import { initializeCategoryPage } from "../../app/store/ui/productFilterPage";
@@ -60,6 +61,12 @@ export default function Categories(props: CategoriesProps) {
           </Box>
         </Box>
       )}
+      <Box>
+        <Box sx={{ bgcolor: darkBackgroundColor, height: 20 }}></Box>
+        <Box sx={{ mt: 1 }}>
+          <Footer />
+        </Box>
+      </Box>
     </Box>
   );
 }

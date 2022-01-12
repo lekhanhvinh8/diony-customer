@@ -11,7 +11,6 @@ import {
   Link,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useLocation, useNavigate } from "react-router-dom";
 import Joi from "joi";
 import { renderInput, validate } from "../../app/layouts/common/formUtil";
@@ -20,6 +19,8 @@ import { LoadingButton } from "@mui/lab";
 import { login } from "../../app/services/authService";
 import { useAppDispatch } from "../../app/hooks";
 import { setUser } from "../../app/store/user";
+import { Link as RouteLink } from "react-router-dom";
+import DionysLogo from "../../app/layouts/images/DionysLogo10.png";
 
 const theme = createTheme();
 
@@ -73,7 +74,8 @@ export default function Login(props: LoginProps) {
     } catch (ex: any) {
       if (ex.response && ex.response.status === 400) {
         const newErrors = { [emailAddressField]: "" };
-        newErrors[emailAddressField] = ex.response.message;
+        newErrors[emailAddressField] = ex.response.data;
+        console.log(newErrors);
         setErrors(newErrors);
       }
 
@@ -111,9 +113,13 @@ export default function Login(props: LoginProps) {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
+            <RouteLink to="/">
+              <Avatar
+                sx={{ m: 1, bgcolor: "primary.main", height: 100, width: 100 }}
+                src={DionysLogo}
+              ></Avatar>
+            </RouteLink>
+
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
@@ -165,9 +171,9 @@ export default function Login(props: LoginProps) {
               </LoadingButton>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  {/* <Link href="#" variant="body2">
                     Forgot password?
-                  </Link>
+                  </Link> */}
                 </Grid>
                 <Grid item>
                   <Link href="/signup" variant="body2">

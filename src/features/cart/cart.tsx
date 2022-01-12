@@ -1,11 +1,12 @@
 import { Box, Checkbox, Grid, Typography } from "@mui/material";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { checkAll, isAllChecked, isAllDisabled } from "../../app/store/ui/cart";
 import ElevationScrollHeader from "../header/elevationHeader";
 import CartGroup from "./cartGroup";
 import OrderArea from "./orderArea";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
+import Footer from "../footer/footer";
 
 export interface CartProps {}
 
@@ -112,6 +113,13 @@ export default function Cart(props: CartProps) {
 
             <OrderArea />
           </Grid>
+        </Box>
+      </Box>
+
+      <Box>
+        <Box sx={{ bgcolor: darkBackgroundColor, height: 20 }}></Box>
+        <Box sx={{ mt: 1 }}>
+          <Footer />
         </Box>
       </Box>
     </Box>

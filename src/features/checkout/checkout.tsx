@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import PaymentSelection from "./paymentSelection";
 import OrderArea from "./orderArea";
 import { initializeCheckoutPage } from "../../app/store/ui/checkout";
+import Footer from "../footer/footer";
 
 export interface CheckoutProps {}
 
@@ -76,6 +77,13 @@ export default function Checkout(props: CheckoutProps) {
           <Box>
             <OrderArea />
           </Box>
+        </Box>
+      </Box>
+
+      <Box>
+        <Box sx={{ bgcolor: darkBackgroundColor, height: 20 }}></Box>
+        <Box sx={{ mt: 1 }}>
+          <Footer />
         </Box>
       </Box>
     </Box>

@@ -4,9 +4,12 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getPriceAndQuantity } from "../../app/store/ui/productDetailPage";
 import { addToCart } from "../../app/store/entities/cart";
 
-export interface AddToCartButtonProps {}
+export interface AddToCartButtonProps {
+  topPageRef: React.MutableRefObject<any>;
+}
 
 export default function AddToCartButton(props: AddToCartButtonProps) {
+  const { topPageRef } = props;
   const dispatch = useAppDispatch();
   const { price, quantity } = useAppSelector(getPriceAndQuantity);
   const selectedQuantity = useAppSelector(
@@ -28,6 +31,11 @@ export default function AddToCartButton(props: AddToCartButtonProps) {
         color="error"
         disabled={!productReadyToCart}
         onClick={async () => {
+          topPageRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "start",
+          });
           await dispatch(addToCart());
         }}
       >

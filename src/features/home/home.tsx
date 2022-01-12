@@ -2,6 +2,8 @@ import { Box } from "@mui/material";
 import Advertisements from "./advertisements";
 import SliderCategories from "./sliderCategories";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
+import SliderViewedProduct from "./sliderViewedProducts";
+import RecommendedProducts from "./recommendedProducts";
 
 export interface HomeProps {}
 
@@ -27,7 +29,11 @@ export default function Home(props: HomeProps) {
         </Box>
 
         <Box sx={{ marginTop: 3 }}>
-          <Advertisements />
+          <SliderViewedProduct />
+        </Box>
+
+        <Box sx={{ marginTop: 3 }}>
+          <RecommendedProducts />
         </Box>
       </Box>
     </Box>

@@ -19,7 +19,9 @@ import Joi from "joi";
 import { renderInput, validate } from "../../app/layouts/common/formUtil";
 import { useState } from "react";
 import { register, UserRegister } from "../../app/services/authService";
+import { Link as RouteLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import DionysLogo from "../../app/layouts/images/DionysLogo10.png";
 
 const theme = createTheme();
 
@@ -170,9 +172,12 @@ export default function SignUp(props: SignUpProps) {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
+            <RouteLink to="/">
+              <Avatar
+                sx={{ m: 1, bgcolor: "primary.main", height: 100, width: 100 }}
+                src={DionysLogo}
+              ></Avatar>
+            </RouteLink>
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
@@ -258,9 +263,9 @@ export default function SignUp(props: SignUpProps) {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  {/* <Link href="#" variant="body2">
                     {"Forgot password"}
-                  </Link>
+                  </Link> */}
                 </Grid>
               </Grid>
             </Box>

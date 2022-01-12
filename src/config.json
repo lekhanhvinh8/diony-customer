@@ -13,7 +13,8 @@
         "pending": {
             "statusCode": "PENDING_APPROVAL",
             "tabName": "pending",
-            "label": "Chờ xác nhận"
+            "label": "Chờ xác nhận",
+            "step": "Chờ xác nhận"
         },
         "toPrepare": {
             "statusCode": "TO_PREPARE",

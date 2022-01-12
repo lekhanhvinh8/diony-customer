@@ -81,7 +81,7 @@ export default function Advertisements(props: AdvertisementsProps) {
             >
               {images.map((step, index) => (
                 <Box
-                  key={step.label}
+                  key={index}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"

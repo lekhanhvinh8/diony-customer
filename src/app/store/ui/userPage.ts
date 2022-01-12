@@ -32,6 +32,7 @@ export interface ProfilePage {
   isMale: boolean;
   avatarUrl: string | null;
   avatarUploading: boolean;
+  changePasswordDialogOpen: boolean;
 }
 
 interface UserPageStore {
@@ -60,6 +61,7 @@ const initialState: UserPageStore = {
     isMale: false,
     avatarUrl: null,
     avatarUploading: false,
+    changePasswordDialogOpen: false,
   },
 };
 
@@ -118,6 +120,9 @@ const slice = createSlice({
     avatarUrlUpdated: (page, action: PayloadAction<string>) => {
       page.profilePage.avatarUrl = action.payload;
     },
+    changePasswordDialogOpenSet: (page, action: PayloadAction<boolean>) => {
+      page.profilePage.changePasswordDialogOpen = action.payload;
+    },
   },
 });
 
@@ -142,6 +147,7 @@ const {
   isMaleSet,
   avatarUploadingSet,
   avatarUrlUpdated,
+  changePasswordDialogOpenSet,
 } = slice.actions;
 
 export const setAddressDialogOpen =
@@ -260,4 +266,10 @@ export const updateUserAvatar =
     } catch (ex) {
       dispatch(avatarUploadingSet(false));
     }
+  };
+
+export const openChangePasswordDialogOpen =
+  (open: boolean): AppThunk =>
+  async (dispatch) => {
+    dispatch(changePasswordDialogOpenSet(open));
   };

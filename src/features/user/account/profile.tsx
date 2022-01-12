@@ -24,7 +24,9 @@ import {
   setIsMale,
   reloadProfilePage,
   updateUserAvatar,
+  openChangePasswordDialogOpen,
 } from "./../../../app/store/ui/userPage";
+import ChangePassword from "./changePassword";
 
 export interface ProfileProps {}
 
@@ -54,6 +56,7 @@ export default function Profile(props: ProfileProps) {
 
   return (
     <Box sx={{ padding: 3 }}>
+      <ChangePassword />
       <Stack spacing={2}>
         <Typography variant="h6">Quản lý hồ sơ</Typography>
         <Divider />
@@ -148,13 +151,13 @@ export default function Profile(props: ProfileProps) {
                 </Grid>
                 <Grid item xs={rightColumnFormGrid}>
                   {profilePage.email ? profilePage.email : "Chưa có email"}
-                  <Button
+                  {/* <Button
                     variant="outlined"
                     size="small"
                     sx={{ marginLeft: 2 }}
                   >
                     Cập nhật
-                  </Button>
+                  </Button> */}
                 </Grid>
 
                 <Grid item xs={leftColumnFormGrid} display="flex">
@@ -171,12 +174,34 @@ export default function Profile(props: ProfileProps) {
                   {profilePage.phoneNumber
                     ? profilePage.phoneNumber
                     : "Chưa có số điện thoại"}
-                  <Button
+                  {/* <Button
                     variant="outlined"
                     size="small"
                     sx={{ marginLeft: 2 }}
                   >
                     Cập nhật
+                  </Button> */}
+                </Grid>
+
+                <Grid item xs={leftColumnFormGrid} display="flex">
+                  <Box sx={{ flexGrow: 1 }}></Box>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    sx={{ height: "100%" }}
+                  >
+                    Mật khẩu
+                  </Box>
+                </Grid>
+                <Grid item xs={rightColumnFormGrid}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => {
+                      dispatch(openChangePasswordDialogOpen(true));
+                    }}
+                  >
+                    Đổi mật khẩu
                   </Button>
                 </Grid>
 

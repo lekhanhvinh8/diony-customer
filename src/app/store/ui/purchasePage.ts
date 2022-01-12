@@ -8,7 +8,7 @@ export const defaultPageSize = 5;
 
 export interface OrderGroup {
   id: number;
-  orderStatus: number;
+  orderStatus: string;
   orderDate: string;
   shopId: number;
   shopName: string;

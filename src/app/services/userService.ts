@@ -96,6 +96,7 @@ export const getUserProfile = async () => {
     isMale: userInfo.isMale,
     avatarUrl: userInfo.avatar,
     avatarUploading: false,
+    changePasswordDialogOpen: false,
   };
   return userInfoInForm;
 };
@@ -131,4 +132,14 @@ export const uploadUserAvatar = async (userId: string, image: Blob) => {
   );
 
   return avatarUrl as string;
+};
+
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string
+) => {
+  await http.post(apiEndpoint + "/changePassword", {
+    currentPassword,
+    newPassword,
+  });
 };

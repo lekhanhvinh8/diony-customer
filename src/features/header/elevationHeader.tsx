@@ -91,9 +91,9 @@ function Header(props: HeaderProps) {
                   aria-label="notifications"
                   color="inherit"
                 >
-                  <Badge badgeContent={17} color="error">
+                  {/* <Badge badgeContent={17} color="error">
                     <NotificationsIcon />
-                  </Badge>
+                  </Badge> */}
                 </IconButton>
                 <AccountArea />
               </Box>

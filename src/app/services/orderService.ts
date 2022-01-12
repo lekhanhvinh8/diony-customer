@@ -78,6 +78,18 @@ export const capturePaypalOrder = async (orderId: number) => {
   });
 };
 
+export const cancelPaypalOrder = async (orderId: number) => {
+  return fetch(apiEndpoint + "CancelPaypalOrder/" + orderId, {
+    method: "post",
+    headers: {
+      "content-type": "application/json",
+      authorization: "bearer " + getJwt(),
+    },
+  }).then(function (res) {
+    return res.json();
+  });
+};
+
 export const getAllOrders = async () => {
   const { data: orders } = await http.get(apiEndpoint);
 
