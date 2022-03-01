@@ -75,7 +75,6 @@ export default function Login(props: LoginProps) {
       if (ex.response && ex.response.status === 400) {
         const newErrors = { [emailAddressField]: "" };
         newErrors[emailAddressField] = ex.response.data;
-        console.log(newErrors);
         setErrors(newErrors);
       }
 

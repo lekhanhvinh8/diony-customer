@@ -25,6 +25,7 @@ import { loadCart } from "../store/entities/cart";
 import { setCategoriesInit } from "../store/ui/categoryPage";
 import Search from "../../features/search/search";
 import OrderDetail from "../../features/orderDetail/orderDetail";
+import config from "../../config.json";
 
 export const cateIdRouteParams = "cateId";
 export const productIdRouteParams = "productId";
@@ -33,6 +34,8 @@ export const orderIdParams = "orderId";
 function App() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.decodeUser);
+
+  console.log(config);
 
   useEffect(() => {
     const asyncFunc = async () => {
