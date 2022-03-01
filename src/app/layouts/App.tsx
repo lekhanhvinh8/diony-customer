@@ -36,6 +36,7 @@ function App() {
   const user = useAppSelector((state) => state.user.decodeUser);
 
   console.log(config);
+  console.log(process.env);
 
   useEffect(() => {
     const asyncFunc = async () => {
