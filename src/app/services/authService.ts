@@ -1,6 +1,5 @@
 import httpService from "./httpService";
 import jwtDecode from "jwt-decode";
-import { apiUrl } from "../../config.json";
 import http from "./httpService";
 
 export const roleCustomer = "User";
@@ -23,7 +22,7 @@ export interface UserRegister {
   returnUrl: string;
 }
 
-const apiEndpoint = apiUrl + "user";
+const apiEndpoint ="user";
 const jwtKeyName = "jwt";
 const userIdKeyName = "userId";
 

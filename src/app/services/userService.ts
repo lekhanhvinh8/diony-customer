@@ -1,10 +1,9 @@
 import http from "./httpService";
-import { apiUrl } from "../../config.json";
 import { Address } from "../models/address/address";
 import { toast } from "react-toastify";
 import { ProfilePage } from "../store/ui/userPage";
 
-const apiEndpoint = apiUrl + "user";
+const apiEndpoint = "user";
 
 export interface AddressRequestData {
   id: number | null;

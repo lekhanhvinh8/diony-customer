@@ -1,10 +1,10 @@
 import http from "./httpService";
-import { GHNtoken } from "../../config.json";
 import { Province } from "../models/address/province";
 import { District } from "../models/address/district";
 import { Ward } from "../models/address/ward";
 
-const apiUrl = "https://online-gateway.ghn.vn/shiip/public-api/master-data/";
+const apiUrl = process.env.REACT_APP_GHN_URL;
+const GHNtoken = process.env.REACT_APP_GHN_TOKEN || "";
 
 export const getProvinces = async () => {
   const { data: result } = await http.get(apiUrl + "province", {

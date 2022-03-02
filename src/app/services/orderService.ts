@@ -1,11 +1,10 @@
 import http from "./httpService";
-import { apiUrl } from "../../config.json";
 import { OrderGroup, OrderItem } from "../store/ui/purchasePage";
 import { getJwt } from "./authService";
 import { OrderDetail } from "../models/orderDetail";
 import { RatingItem } from "../store/ui/orderDetailPage";
 
-const apiEndpoint = apiUrl + "order/";
+const apiEndpoint =  "order/";
 
 export const getExpectedDeliveryTime = async (
   addressIdToShip: number,
@@ -187,7 +186,7 @@ export const getOrderDetail = async (orderId: string) => {
 };
 
 export const cancelOrder = async (orderId: string, reason: string) => {
-  await http.delete(apiUrl + "OrderHandling/UserCancelOrder", {
+  await http.delete("OrderHandling/UserCancelOrder", {
     params: {
       orderId,
       reason,

@@ -1,8 +1,6 @@
 {
-    "apiUrl": "http://localhost:5000/api/",
     "desktopWidth": 1366,
     "scrollBarWidth": 17,
-    "GHNtoken": "8abf528e-2bd1-11ec-ab03-e680cb72ac98",
     "numberOfProductsPerFilterPage": 8,
     "orderStatus": {
         "all": {

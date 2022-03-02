@@ -1,8 +1,7 @@
 import http from "./httpService";
-import { apiUrl } from "../../config.json";
 import { Category } from "../models/category";
 
-const apiEndpoint = apiUrl + "category";
+const apiEndpoint =  "/category";
 
 export const getAllCategories = async () => {
   const { data: categories } = await http.get<Array<Category>>(apiEndpoint);

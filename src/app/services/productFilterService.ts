@@ -1,9 +1,8 @@
-import { apiUrl } from "../../config.json";
 import { ProductCard } from "../models/productCard";
 import http from "./httpService";
 import { numberOfProductsPerFilterPage } from "../../config.json";
 
-const apiEndpoint = apiUrl + "productFilter/";
+const apiEndpoint =  "productFilter/";
 
 export interface filterRequestParams {
   pageNumber: number;

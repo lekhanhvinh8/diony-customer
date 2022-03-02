@@ -1,9 +1,8 @@
 import http from "./httpService";
-import { apiUrl } from "../../config.json";
 import { CartGroupItem } from "../models/cart/cartGroupItem";
 import { CartGroup } from "../models/cart/cartGroup";
 
-const apiEndpoint = apiUrl + "cart";
+const apiEndpoint = "cart";
 
 export const addToCart = async (
   productId: number | null,

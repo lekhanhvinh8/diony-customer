@@ -1,5 +1,4 @@
 import http from "./httpService";
-import { apiUrl } from "../../config.json";
 import { ProductDetail, ProductRating } from "../models/productDetail";
 import { ProductVariant, VariantValueInfo } from "../models/productVariant";
 import { ProductCard } from "./../models/productCard";
@@ -8,7 +7,7 @@ import {
   ProductTypingProperty,
 } from "../store/ui/productDetailPage";
 
-const apiEndpoint = apiUrl + "product";
+const apiEndpoint =  "product";
 
 export const getProductDetail = async (productId: number) => {
   const { data: rawProduct } = await http.get(apiEndpoint + "/" + productId);
