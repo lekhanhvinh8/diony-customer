@@ -22,7 +22,7 @@ export interface UserRegister {
   returnUrl: string;
 }
 
-const apiEndpoint ="user";
+const apiEndpoint = "user";
 const jwtKeyName = "jwt";
 const userIdKeyName = "userId";
 

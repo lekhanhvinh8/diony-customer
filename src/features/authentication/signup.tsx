@@ -97,7 +97,7 @@ export default function SignUp(props: SignUpProps) {
         password: userForm[passwordField],
         name: userForm.nameField,
         phoneNumber: userForm[phoneNumberField],
-        returnUrl: "http://localhost:3000/login",
+        returnUrl: "https://dionyse.herokuapp.com/login",
       };
       await register(user);
       setLoading(false);

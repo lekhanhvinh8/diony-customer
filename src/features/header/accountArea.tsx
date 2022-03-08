@@ -82,7 +82,7 @@ export default function AccountArea(props: AccountAreaProps) {
             to={
               "/signup?" +
               queryString.stringify({
-                next: "http://localhost:3000/login",
+                next: "https://dionyse.herokuapp.com/login",
               })
             }
             style={{
