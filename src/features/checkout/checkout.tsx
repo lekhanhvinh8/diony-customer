@@ -10,6 +10,7 @@ import PaymentSelection from "./paymentSelection";
 import OrderArea from "./orderArea";
 import { initializeCheckoutPage } from "../../app/store/ui/checkout";
 import Footer from "../footer/footer";
+import { toast } from "react-toastify";
 
 export interface CheckoutProps {}
 
@@ -33,6 +34,11 @@ export default function Checkout(props: CheckoutProps) {
 
     asyncFunc();
   }, [dispatch, userAddresses, cartGroups, cartPage]);
+
+  useEffect(() => {
+    toast.success("TK Paypal: buyer-lekhanhvinh8@gmail.com", {autoClose: 50000});
+    toast.success("MK Paypal: A123456a", {autoClose: 50000});
+  }, [])
 
   return (
     <Box>

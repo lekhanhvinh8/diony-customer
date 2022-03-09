@@ -10,6 +10,7 @@ import { reloadOrderDetail } from "../../app/store/ui/orderDetailPage";
 import OrderAction from "./orderAction";
 import CancelledDialog from "./cancelledDialog";
 import RatingDialog from "./ratingDialog";
+import { toast } from "react-toastify";
 
 interface OrderDetailProps {}
 
@@ -24,6 +25,8 @@ const OrderDetail = (props: OrderDetailProps) => {
       dispatch(reloadOrderDetail(orderId));
     }
   }, [orderId, dispatch]);
+
+  
 
   return (
     <Box sx={{ mt: 2 }}>

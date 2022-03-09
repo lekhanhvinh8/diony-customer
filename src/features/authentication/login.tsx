@@ -14,13 +14,14 @@ import { ThemeProvider } from "@mui/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import Joi from "joi";
 import { renderInput, validate } from "../../app/layouts/common/formUtil";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { login } from "../../app/services/authService";
 import { useAppDispatch } from "../../app/hooks";
 import { setUser } from "../../app/store/user";
 import { Link as RouteLink } from "react-router-dom";
 import DionysLogo from "../../app/layouts/images/DionysLogo10.png";
+import { toast } from "react-toastify";
 
 const theme = createTheme();
 
@@ -53,6 +54,12 @@ export default function Login(props: LoginProps) {
       [passwordField]: password,
     };
   };
+
+  useEffect(() => {
+    toast.success("TK: vinhlekh@gmail.com", {autoClose: 50000});
+    toast.success("MK: User12", {autoClose: 50000});
+
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

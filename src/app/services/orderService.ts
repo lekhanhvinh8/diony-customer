@@ -4,6 +4,7 @@ import { getJwt } from "./authService";
 import { OrderDetail } from "../models/orderDetail";
 import { RatingItem } from "../store/ui/orderDetailPage";
 
+const apiUrl = process.env.REACT_APP_API_URL; // for not axios caller
 const apiEndpoint =  "order/";
 
 export const getExpectedDeliveryTime = async (
@@ -49,7 +50,7 @@ export const createPaypalOrder = async (
   cartIds: Array<number>,
   addressId: number
 ) => {
-  return fetch(apiEndpoint, {
+  return fetch(apiUrl + "/" + apiEndpoint, {
     method: "post",
     headers: {
       "content-type": "application/json",
@@ -66,7 +67,7 @@ export const createPaypalOrder = async (
 };
 
 export const capturePaypalOrder = async (orderId: number) => {
-  return fetch(apiEndpoint + "capturePaypalOrder/" + orderId, {
+  return fetch(apiUrl + "/" + apiEndpoint + "capturePaypalOrder/" + orderId, {
     method: "post",
     headers: {
       "content-type": "application/json",
@@ -78,7 +79,7 @@ export const capturePaypalOrder = async (orderId: number) => {
 };
 
 export const cancelPaypalOrder = async (orderId: number) => {
-  return fetch(apiEndpoint + "CancelPaypalOrder/" + orderId, {
+  return fetch(apiUrl + "/" + apiEndpoint + "CancelPaypalOrder/" + orderId, {
     method: "post",
     headers: {
       "content-type": "application/json",

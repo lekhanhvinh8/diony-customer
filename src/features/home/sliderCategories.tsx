@@ -54,12 +54,12 @@ export interface SliderCategoriesProps {}
 
 const formatCategoryName = (name: string) => {
   const trimIndex = 24;
-  if (name.length > 24) {
+  if (name && name.length > 24) {
     const format = name.slice(0, trimIndex - 3);
     return format + "...";
   }
 
-  return name;
+  return name || "undefined";
 };
 
 export default function SliderCategories(props: SliderCategoriesProps) {
