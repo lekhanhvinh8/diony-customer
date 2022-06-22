@@ -8,4 +8,5 @@ export interface CartGroupItem {
   quantity: number;
   amount: number;
   combinationName: string | null;
+
 }

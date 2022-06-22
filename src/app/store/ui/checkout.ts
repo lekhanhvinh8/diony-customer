@@ -113,7 +113,8 @@ export const initializeCheckoutPage =
       return;
     if (addresses.length === 0) return;
 
-    dispatch(pageReloadingSet(true));
+    try {
+      dispatch(pageReloadingSet(true));
 
     //initialize selected address
     let selectedAddressId: number | null = null;
@@ -185,6 +186,12 @@ export const initializeCheckoutPage =
     };
 
     dispatch(pageInitialized(checkoutState));
+    dispatch(pageReloadingSet(false));
+
+    } catch (error) {
+      dispatch(pageReloadingSet(false));
+      
+    }
   };
 
 export const selectAddressIdTemporarilly =
@@ -218,7 +225,7 @@ export const reloadShippingCostsAndExpectedDeliveryTimes =
 
     try {
       dispatch(pageReloadingSet(true));
-
+      //may be i got a bug here, why getting all cartgroup instead of just checked item
       //initialize deliveryTimes
       const expectedDeliveryTimes: CheckoutStore["expectedDeliveryTimes"] = [];
 
@@ -260,6 +267,7 @@ export const reloadShippingCostsAndExpectedDeliveryTimes =
 
       dispatch(pageReloadingSet(false));
     } catch (ex) {
+      console.log("sad");
       dispatch(pageReloadingSet(false));
     }
   };

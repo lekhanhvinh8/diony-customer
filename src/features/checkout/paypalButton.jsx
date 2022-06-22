@@ -12,7 +12,11 @@ import {
   createPaypalOrder,
 } from "../../app/services/orderService";
 
-const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
+console.log(window.paypal);
+
+const PayPalButton = window.paypal
+  ? window.paypal.Buttons.driver("react", { React, ReactDOM })
+  : null;
 
 export default function PaypalButton({ cartItemIds, selectedAddressId }) {
   const navigate = useNavigate();

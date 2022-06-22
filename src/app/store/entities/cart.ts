@@ -64,6 +64,8 @@ const slice = createSlice({
     cartCleared: (cartGroups) => {
       return [];
     },
+
+    
   },
 });
 

@@ -217,6 +217,10 @@ export const clearCartPage: AppThunk = (dispatch) => {
   dispatch(cartCleared());
 };
 
+export const removeCartPage = (itemIndexes: Array<number>) : AppThunk => (dispatch) => {
+
+}
+
 //selectors
 export const isGroupDisabled = (groupIndex: number) =>
   createSelector(

@@ -67,6 +67,8 @@ export const createPaypalOrder = async (
 };
 
 export const capturePaypalOrder = async (orderId: number) => {
+  //orderId is id of paypal order, it's acctually a string
+   
   return fetch(apiEndpoint + "capturePaypalOrder/" + orderId, {
     method: "post",
     headers: {
