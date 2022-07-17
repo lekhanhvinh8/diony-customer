@@ -21,6 +21,7 @@ export interface OrderDetail {
   isPaid: boolean;
   total: number;
   shipFee: number;
+  shippingCostDiscount: number;
   deliveryAddress: string;
   pickupAddress: string;
   paymentType: string;

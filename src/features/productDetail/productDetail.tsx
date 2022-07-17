@@ -5,7 +5,6 @@ import { getPath } from "../../app/store/entities/categories";
 import {
   getProductDetail,
   reloadProductDetailPage,
-  reloadRatings,
 } from "../../app/store/ui/productDetailPage";
 import CategoriesPath from "../category/categoriesPath";
 import ElevationScrollHeader from "../header/elevationHeader";
@@ -49,7 +48,6 @@ export default function ProductDetail(props: ProductDetailProps) {
     asyncFunc();
   }, [dispatch, navigate, params.productId]);
 
-  const array = [...Array(10)];
 
   return (
     <Box>

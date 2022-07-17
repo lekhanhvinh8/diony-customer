@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { useAppDispatch } from "../../app/hooks";
 
-import { clearCartPage } from "./../../app/store/ui/cart";
-import { clearCartGroups } from "./../../app/store/entities/cart";
+import { clearCarts } from "./../../app/store/entities/cart";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import {
@@ -18,19 +17,22 @@ const PayPalButton = window.paypal
   ? window.paypal.Buttons.driver("react", { React, ReactDOM })
   : null;
 
-export default function PaypalButton({ cartItemIds, selectedAddressId }) {
+export default function PaypalButton({
+  cartItemIds,
+  selectedAddressId,
+  voucherId,
+}) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const createOrder = (data, actions) => {
     if (selectedAddressId && cartItemIds.length !== 0) {
-      return createPaypalOrder(cartItemIds, selectedAddressId);
+      return createPaypalOrder(cartItemIds, selectedAddressId, voucherId);
     }
   };
 
   const onApprove = (data, actions) => {
-    dispatch(clearCartPage); //bug
-    dispatch(clearCartGroups); //bug ==> just clearing selected item instead of clearing all
+    dispatch(clearCarts(cartItemIds));
     toast.success("Đặt hàng thành công !!!");
     navigate("/user/purchase");
 

@@ -12,11 +12,9 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { cut } from "../../app/utils/stringCutter";
 import { formatMoney } from "../../app/utils/formatMoney";
-import { ProductCard } from "../../app/models/productCard";
 import {
   changeRecommendedPageNumber,
   loadRecommendedProducts,
-  loadViewedProducts,
 } from "../../app/store/ui/homePage";
 
 const desktopScreenWidth = window.screen.availWidth;
@@ -88,12 +86,25 @@ export default function RecommendedProducts(props: RecommendedProductsProps) {
                             image={product.avatarUrl}
                           />
                           <CardContent>
-                            <Typography height={50} align="left" fontSize={13}>
-                              {cut(product.name, 45)}
-                            </Typography>
-                            <Box display="flex" alignItems="end">
+                            <div
+                              style={{
+                                fontSize: 13,
+                                display: "-webkit-box",
+                                WebkitBoxOrient: "vertical",
+                                WebkitLineClamp: 2,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {product.name}
+                            </div>
+                            <Box
+                              sx={{ marginTop: 1 }}
+                              display="flex"
+                              alignItems="end"
+                            >
                               <Typography flexGrow={1} color="red">
-                                {formatMoney(product.price)}
+                                {formatMoney(product.price) + "đ"}
                               </Typography>
                               <Typography fontSize={13}>
                                 {"Đã bán " + product.quantitySold}

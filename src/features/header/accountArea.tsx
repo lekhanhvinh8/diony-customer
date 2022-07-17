@@ -1,4 +1,3 @@
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Divider, IconButton, Stack, Typography, Avatar } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";

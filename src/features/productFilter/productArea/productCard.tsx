@@ -65,8 +65,17 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Box>
           <CardContent style={{ height: 150 }}>
             {product ? (
-              <Typography sx={{ height: 48 }}>
-                {formatProductName(product.name)}
+              <Typography
+                style={{
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 2,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+                sx={{ height: 48 }}
+              >
+                {product.name}
               </Typography>
             ) : (
               <Skeleton sx={{ height: 48 }} />

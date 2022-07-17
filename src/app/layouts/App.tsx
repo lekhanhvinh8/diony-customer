@@ -20,7 +20,7 @@ import Purchase from "../../features/user/purchase/purchase";
 import Profile from "../../features/user/account/profile";
 import Address from "../../features/user/account/address";
 import Checkout from "../../features/checkout/checkout";
-import { initializePage } from "../store/ui/cart";
+// import { initializePage } from "../store/ui/cart";
 import { loadCart } from "../store/entities/cart";
 import { setCategoriesInit } from "../store/ui/categoryPage";
 import Search from "../../features/search/search";
@@ -50,7 +50,7 @@ function App() {
     const asyncFunc = async () => {
       if (user) {
         await dispatch(loadCart());
-        await dispatch(initializePage); //temp, will delete soon
+        //await dispatch(initializePage); //temp, will delete soon
       }
     };
 

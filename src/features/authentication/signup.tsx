@@ -14,7 +14,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Joi from "joi";
 import { renderInput, validate } from "../../app/layouts/common/formUtil";
 import { useState } from "react";
@@ -179,7 +178,7 @@ export default function SignUp(props: SignUpProps) {
               ></Avatar>
             </RouteLink>
             <Typography component="h1" variant="h5">
-              Sign up
+              Đăng ký
             </Typography>
             <Box
               component="form"
@@ -199,7 +198,7 @@ export default function SignUp(props: SignUpProps) {
               )}
               {renderInput(
                 passwordField,
-                "Password *",
+                "Mật khẩu *",
                 password,
                 getAllData(),
                 errors,
@@ -212,7 +211,7 @@ export default function SignUp(props: SignUpProps) {
               )}
               {renderInput(
                 confirmPasswordField,
-                "Confirm Password *",
+                "Xác nhận mật khẩu *",
                 confirmPassword,
                 getAllData(),
                 errors,
@@ -226,7 +225,7 @@ export default function SignUp(props: SignUpProps) {
               )}
               {renderInput(
                 phoneNumberField,
-                "Phone Number *",
+                "Số điện thoại *",
                 phoneNumber,
                 getAllData(),
                 errors,
@@ -244,10 +243,10 @@ export default function SignUp(props: SignUpProps) {
                 setErrors,
                 schemaMap
               )}
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <Button
                 type="submit"
                 fullWidth
@@ -259,7 +258,7 @@ export default function SignUp(props: SignUpProps) {
               <Grid container>
                 <Grid item xs>
                   <Link href="/login" variant="body2">
-                    Have an account ? Login
+                    Đã có tài khoản ? Đăng nhập ngay
                   </Link>
                 </Grid>
                 <Grid item>

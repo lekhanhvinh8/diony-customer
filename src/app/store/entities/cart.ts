@@ -3,11 +3,7 @@ import { toast } from "react-toastify";
 import { CartGroup } from "../../models/cart/cartGroup";
 import { CartGroupItem } from "../../models/cart/cartGroupItem";
 import { AppThunk, RootState } from "../store";
-import {
-  cartGroupIndexAdded,
-  cartItemIndexAdded,
-  disabledItemIndex,
-} from "../ui/cart";
+
 import { getCombinationId } from "../ui/productDetailPage";
 import {
   addToCart as addToCartService,
@@ -39,33 +35,119 @@ const slice = createSlice({
     itemAmountChanged: (
       cartGroups,
       action: PayloadAction<{
-        groupIndex: number;
-        itemIndex: number;
+        cartItemId: number;
         newAmount: number;
       }>
     ) => {
-      const { groupIndex, itemIndex, newAmount } = action.payload;
+      const { cartItemId, newAmount } = action.payload;
 
-      cartGroups[groupIndex].items[itemIndex].amount = newAmount;
-    },
-
-    cartRemoved: (
-      cartGroups,
-      action: PayloadAction<{ groupIndex: number; itemIndex: number }>
-    ) => {
-      const { groupIndex, itemIndex } = action.payload;
-      cartGroups[groupIndex].items.splice(itemIndex, 1);
-
-      if (cartGroups[groupIndex].items.length === 0) {
-        cartGroups.splice(groupIndex, 1);
+      for (const cartGroup of cartGroups) {
+        for (const cartItem of cartGroup.items) {
+          if (cartItem.id === cartItemId) {
+            cartItem.amount = newAmount;
+          }
+        }
       }
     },
 
-    cartCleared: (cartGroups) => {
-      return [];
+    cartRemoved: (cartGroups, action: PayloadAction<number>) => {
+      const cartItemId = action.payload;
+
+      for (const cartGroup of cartGroups) {
+        const cartItemIndex = cartGroup.items.findIndex(
+          (i) => i.id === cartItemId
+        );
+        if (cartItemIndex !== -1) {
+          cartGroup.items.splice(cartItemIndex, 1);
+
+          if (cartGroup.items.length === 0) {
+            const cartGroupIndex = cartGroups.findIndex(
+              (g) => g.shopInfo.shopId === cartGroup.shopInfo.shopId
+            );
+
+            if (cartGroupIndex !== -1) {
+              cartGroups.splice(cartGroupIndex, 1);
+            }
+          }
+        }
+      }
     },
 
-    
+    cartCleared: (cartGroups, action: PayloadAction<Array<number>>) => {
+      const cartItemIds = action.payload;
+
+      for (const cartGroup of cartGroups) {
+        cartGroup.items = cartGroup.items.filter(
+          (cartItem) => !cartItemIds.includes(cartItem.id)
+        );
+      }
+
+      for (let i = 0; i < cartGroups.length; i++) {
+        const cartGroup = cartGroups[i];
+        if (cartGroup.items.length === 0) {
+          cartGroups.splice(i, 1);
+          i--;
+        }
+      }
+    },
+
+    allGroupsChecked: (cartGroups, action: PayloadAction<boolean>) => {
+      const checked = action.payload;
+
+      for (const cartGroup of cartGroups) {
+        for (const cartItem of cartGroup.items) {
+          cartItem.checked = checked;
+        }
+      }
+    },
+
+    cartGroupChecked: (
+      cartGroups,
+      action: PayloadAction<{ shopId: number; checked: boolean }>
+    ) => {
+      const { shopId, checked } = action.payload;
+
+      for (const cartGroup of cartGroups) {
+        if (cartGroup.shopInfo.shopId === shopId) {
+          for (const cartItem of cartGroup.items) {
+            cartItem.checked = checked;
+          }
+
+          break;
+        }
+      }
+    },
+
+    cartItemChecked: (
+      cartGroups,
+      action: PayloadAction<{ cartItemId: number; checked: boolean }>
+    ) => {
+      const { cartItemId, checked } = action.payload;
+
+      for (const cartGroup of cartGroups) {
+        for (const cartItem of cartGroup.items) {
+          if (cartItem.id === cartItemId) {
+            cartItem.checked = checked;
+            break;
+          }
+        }
+      }
+    },
+
+    cartItemDisabled: (
+      cartGroups,
+      action: PayloadAction<{ cartItemId: number; disabled: boolean }>
+    ) => {
+      const { cartItemId, disabled } = action.payload;
+
+      for (const cartGroup of cartGroups) {
+        for (const cartItem of cartGroup.items) {
+          if (cartItem.id === cartItemId) {
+            cartItem.disabled = disabled;
+          }
+        }
+      }
+    },
   },
 });
 
@@ -78,11 +160,24 @@ const {
   cartGroupAdded,
   cartItemAdded,
   cartCleared,
+  allGroupsChecked,
+  cartGroupChecked,
+  cartItemChecked,
+  cartItemDisabled,
 } = slice.actions;
 
 export const loadCart = (): AppThunk => async (dispatch, getState) => {
   //call cartloadded
   const cartGroups = await getCart();
+
+  for (const cartGroup of cartGroups) {
+    for (const cartItem of cartGroup.items) {
+      if (cartItem.amount > cartItem.quantity) {
+        cartItem.disabled = true;
+      }
+    }
+  }
+
   dispatch(cartLoadded(cartGroups));
 };
 
@@ -116,14 +211,10 @@ export const addToCart = (): AppThunk => async (dispatch, getState) => {
         })
       );
 
-      const groupIndex = cartGroups.findIndex(
-        (c) => c.shopInfo.shopId === newCartGroup.shopInfo.shopId
-      );
-
-      dispatch(cartItemIndexAdded(groupIndex));
+      // dispatch(cartItemIndexAdded(groupIndex));
     } else {
       dispatch(cartGroupAdded(newCartGroup));
-      dispatch(cartGroupIndexAdded());
+      // dispatch(cartGroupIndexAdded());
     }
   } catch (ex: any) {
     if (ex.response && ex.response.status === 400)
@@ -135,70 +226,105 @@ export const addToCart = (): AppThunk => async (dispatch, getState) => {
 };
 
 export const changeItemAmount =
-  (groupIndex: number, itemIndex: number, newAmount: number): AppThunk =>
+  (cartItem: CartGroupItem, newAmount: number): AppThunk =>
   async (dispatch, getState) => {
-    const cartGroup = getState().entities.cartGroups[groupIndex];
-    const cartItem =
-      getState().entities.cartGroups[groupIndex]?.items[itemIndex];
-
-    if (cartGroup && cartItem) {
-      if (newAmount <= 0) {
-        dispatch(itemAmountChanged({ groupIndex, itemIndex, newAmount: 0 }));
-        dispatch(disabledItemIndex(groupIndex, itemIndex));
-        return;
-      }
-      if (newAmount > cartItem.quantity) {
-        try {
-          await changeCartAmount(cartItem.id, cartItem.quantity);
-
-          dispatch(
-            itemAmountChanged({
-              groupIndex,
-              itemIndex,
-              newAmount: cartItem.quantity,
-            })
-          );
-        } catch (ex) {
-          toast.error("Cập nhật thất bại");
-        } finally {
-          return;
-        }
-      }
-
+    if (newAmount <= 0) {
+      dispatch(itemAmountChanged({ cartItemId: cartItem.id, newAmount: 0 }));
+      dispatch(disableCartItem(cartItem.id));
+      return;
+    }
+    if (newAmount > cartItem.quantity) {
       try {
-        await changeCartAmount(cartItem.id, newAmount);
+        await changeCartAmount(cartItem.id, cartItem.quantity);
 
         dispatch(
           itemAmountChanged({
-            groupIndex,
-            itemIndex,
-            newAmount: newAmount,
+            cartItemId: cartItem.id,
+            newAmount: cartItem.quantity,
           })
         );
       } catch (ex) {
         toast.error("Cập nhật thất bại");
+      } finally {
+        return;
       }
+    }
+
+    try {
+      await changeCartAmount(cartItem.id, newAmount);
+
+      dispatch(
+        itemAmountChanged({
+          cartItemId: cartItem.id,
+          newAmount: newAmount,
+        })
+      );
+    } catch (ex) {
+      toast.error("Cập nhật thất bại");
     }
   };
 
 export const removeCart =
-  (groupIndex: number, itemIndex: number): AppThunk =>
+  (cartItemId: number): AppThunk =>
   async (dispatch, getState) => {
-    const cartGroups = getState().entities.cartGroups;
-    if (cartGroups[groupIndex]?.items[itemIndex]) {
-      try {
-        const cartId = cartGroups[groupIndex].items[itemIndex].id;
-        await deleteCart(cartId);
-        dispatch(cartRemoved({ groupIndex, itemIndex }));
-      } catch (ex) {}
-    }
+    try {
+      await deleteCart(cartItemId);
+      dispatch(cartRemoved(cartItemId));
+    } catch (ex) {}
   };
 
-export const clearCartGroups: AppThunk = async (dispatch) => {
-  dispatch(cartCleared());
-};
+export const clearCarts =
+  (cartItemIds: Array<number>): AppThunk =>
+  async (dispatch) => {
+    dispatch(cartCleared(cartItemIds));
+  };
+
+export const checkAll =
+  (checked: boolean): AppThunk =>
+  (dispatch, getState) => {
+    dispatch(allGroupsChecked(checked));
+  };
+
+export const checkCartGroup =
+  (shopId: number, checked: boolean): AppThunk =>
+  (dispatch) => {
+    dispatch(cartGroupChecked({ shopId, checked }));
+  };
+
+export const checkCartItem =
+  (cartItemId: number, checked: boolean): AppThunk =>
+  (dispatch, getState) => {
+    dispatch(cartItemChecked({ cartItemId, checked }));
+  };
+
+export const disableCartItem =
+  (cartItemId: number): AppThunk =>
+  (dispatch, getState) => {
+    dispatch(cartItemChecked({ cartItemId: cartItemId, checked: false }));
+    dispatch(cartItemDisabled({ cartItemId: cartItemId, disabled: true }));
+  };
+
+export const enableCartItem =
+  (cartItemId: number): AppThunk =>
+  (dispatch) => {
+    dispatch(cartItemDisabled({ cartItemId: cartItemId, disabled: false }));
+  };
 
 //selectors
+export const getTotalCost = createSelector(
+  (state: RootState) => state.entities.cartGroups,
+  (cartGroups) => {
+    let totalCost = 0;
+    for (const cartGroup of cartGroups) {
+      for (const cartItem of cartGroup.items) {
+        if (cartItem.checked) totalCost += cartItem.price * cartItem.amount;
+      }
+    }
+
+    return totalCost;
+  }
+);
+
 export const getNumberOfCartItems = createSelector(
   (state: RootState) => state.entities.cartGroups,
   (groups) => {
@@ -210,3 +336,95 @@ export const getNumberOfCartItems = createSelector(
     return numberOfItems;
   }
 );
+
+//selectors
+export const isGroupDisabled = (shopId: number) =>
+  createSelector(
+    (state: RootState) => state.entities.cartGroups,
+    (cartGroups) => {
+      for (const cartGroup of cartGroups) {
+        if (cartGroup.shopInfo.shopId === shopId) {
+          return isAllItemDisabled(cartGroup);
+        }
+      }
+
+      return true;
+    }
+  );
+
+export const isGroupChecked = (shopId: number) =>
+  createSelector(
+    (state: RootState) => state.entities.cartGroups,
+    (cartGroups) => {
+      for (const cartGroup of cartGroups) {
+        if (cartGroup.shopInfo.shopId === shopId) {
+          return isAllItemChecked(cartGroup);
+        }
+      }
+
+      return false;
+    }
+  );
+
+export const isAllDisabled = createSelector(
+  (state: RootState) => state.entities.cartGroups,
+  (cartGroups) => {
+    return isAllGroupDisabled(cartGroups);
+  }
+);
+
+export const isAllChecked = createSelector(
+  (state: RootState) => state.entities.cartGroups,
+  (cartGroups) => {
+    return isAllGroupChecked(cartGroups);
+  }
+);
+
+//helper
+export const isAllItemDisabled = (cartGroup: CartGroup) => {
+  if (cartGroup) {
+    if (cartGroup.items.length === 0) return true;
+
+    for (const cartItem of cartGroup.items) {
+      if (cartItem.disabled === true) return true;
+    }
+
+    return false;
+  }
+
+  return false;
+};
+
+export const isAllGroupDisabled = (allCartGroups: Array<CartGroup>) => {
+  if (allCartGroups.length === 0) return true;
+
+  for (const cartGroup of allCartGroups) {
+    if (isAllItemDisabled(cartGroup) === true) return true;
+  }
+
+  return false;
+};
+
+export const isAllItemChecked = (cartGroup: CartGroup) => {
+  if (cartGroup) {
+    if (cartGroup.items.length === 0) return false;
+
+    for (const cartItem of cartGroup.items) {
+      if (cartItem.checked === false) return false;
+    }
+
+    return true;
+  }
+
+  return false;
+};
+
+export const isAllGroupChecked = (allCartGroups: Array<CartGroup>) => {
+  if (allCartGroups.length === 0) return false;
+
+  for (const cartGroup of allCartGroups) {
+    if (isAllItemChecked(cartGroup) === false) return false;
+  }
+
+  return true;
+};

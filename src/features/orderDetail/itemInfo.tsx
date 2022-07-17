@@ -92,12 +92,30 @@ const ItemInfo = () => {
         </Grid>
         <Grid container sx={{ mt: 2 }}>
           <Grid item xs={9} display="flex" justifyContent="right">
+            Giảm giá:
+          </Grid>
+          <Grid item xs={3} display="flex" justifyContent="right">
+            {formatMoney(
+              Math.round(
+                order?.shippingCostDiscount ? order?.shippingCostDiscount : 0
+              )
+            ) + "đ"}
+          </Grid>
+        </Grid>
+        <Grid container sx={{ mt: 2 }}>
+          <Grid item xs={9} display="flex" justifyContent="right">
             Tổng tính:
           </Grid>
           <Grid item xs={3} display="flex" justifyContent="right">
             <Typography fontSize={19} fontWeight="bold" color="red">
               {formatMoney(
-                order?.shipFee ? getTotalItemPrice() + order?.shipFee : 0
+                Math.round(
+                  order?.shipFee
+                    ? getTotalItemPrice() +
+                        order?.shipFee -
+                        order?.shippingCostDiscount
+                    : 0
+                )
               ) + "đ"}
             </Typography>
           </Grid>

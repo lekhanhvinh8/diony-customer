@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { orderStatus } from "../../../config.json";
-import { getAllOrders, getFilteredOrders } from "../../services/orderService";
-import { number } from "joi";
+import { getFilteredOrders } from "../../services/orderService";
 
 export const defaultPageSize = 5;
 
@@ -14,6 +13,7 @@ export interface OrderGroup {
   shopName: string;
   total: number;
   shippingCost: number;
+  shippingCostDiscount: number;
   items: Array<OrderItem>;
 }
 

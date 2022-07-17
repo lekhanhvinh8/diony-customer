@@ -1,7 +1,6 @@
 import { Box, Grid, Stack, Typography, Divider } from "@mui/material";
 import { useAppSelector } from "../../app/hooks";
 import { CartGroup } from "../../app/models/cart/cartGroup";
-import { CartItemIndex } from "../../app/store/ui/cart";
 import { formatMoney } from "../../app/utils/formatMoney";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import ItemArea from "./itemArea";
@@ -13,12 +12,10 @@ import {
 
 export interface GroupAreaProps {
   cartGroup: CartGroup;
-  cartItemIndexes: Array<CartItemIndex>;
 }
 
 export default function GroupArea({
   cartGroup,
-  cartItemIndexes,
 }: GroupAreaProps) {
   const expectedDeliveryTime = useAppSelector(
     getExpectedDeliveryTime(cartGroup.shopInfo.shopId)
@@ -31,8 +28,7 @@ export default function GroupArea({
   const totalItemPrice = () => {
     let sumOfItemPrice = 0;
     for (const item of cartItems) {
-      const index = cartItems.findIndex((i) => i === item);
-      if (cartItemIndexes[index].checked)
+      if (item.checked)
         sumOfItemPrice += item.price * item.amount;
     }
 
@@ -49,10 +45,8 @@ export default function GroupArea({
         <Typography sx={{ ml: 1 }}>{cartGroup.shopInfo.shopName}</Typography>
       </Box>
       <Box sx={{ mt: 2 }}>
-        {cartItemIndexes.map((itemIndex, index) => {
-          if (!itemIndex.checked) return null;
-
-          const item = cartItems[index];
+        {cartItems.map((item, index) => {
+          if (!item.checked) return null;
           return <ItemArea key={index} item={item} />;
         })}
       </Box>

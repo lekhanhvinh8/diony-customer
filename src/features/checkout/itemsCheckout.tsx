@@ -6,7 +6,6 @@ export interface ItemsCheckoutProps {}
 
 export default function ItemsCheckout(props: ItemsCheckoutProps) {
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
-  const cartPage = useAppSelector((state) => state.ui.cartPage);
 
   return (
     <Box>
@@ -29,17 +28,14 @@ export default function ItemsCheckout(props: ItemsCheckoutProps) {
           </Grid>
         </Grid>
       </Box>
-      {cartPage.cartGroupIndexes.map((groupIndex, index) => {
+      {cartGroups.map((cartGroup, index) => {
         if (
-          groupIndex.cartItemIndexes.map((item) => item.checked).includes(true)
+          cartGroup.items.map((item) => item.checked).includes(true)
         ) {
-          const cartGroup = cartGroups[index];
-          const cartItemIndexes = groupIndex.cartItemIndexes;
           return (
             <Box key={index} sx={{ mt: 2, padding: 4, bgcolor: "#ffffff" }}>
               <GroupArea
                 cartGroup={cartGroup}
-                cartItemIndexes={cartItemIndexes}
               />
             </Box>
           );

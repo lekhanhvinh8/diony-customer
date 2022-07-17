@@ -88,12 +88,25 @@ export default function RelatedProducts(props: RelatedProductsProps) {
                         image={product.avatarUrl}
                       />
                       <CardContent>
-                        <Typography height={50} align="left" fontSize={13}>
-                          {cut(product.name, 45)}
-                        </Typography>
-                        <Box display="flex" alignItems="end">
+                        <div
+                          style={{
+                            fontSize: 13,
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 2,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {product.name}
+                        </div>
+                        <Box
+                          sx={{ marginTop: 1 }}
+                          display="flex"
+                          alignItems="end"
+                        >
                           <Typography flexGrow={1} color="red">
-                            {formatMoney(product.price)}
+                            {formatMoney(product.price) + "đ"}
                           </Typography>
                           <Typography fontSize={13}>
                             {"Đã bán " + product.quantitySold}

@@ -6,4 +6,7 @@ export interface CartGroup {
     shopName: string;
   };
   items: Array<CartGroupItem>;
+
+  checked: boolean;
+  disabled: boolean;
 }

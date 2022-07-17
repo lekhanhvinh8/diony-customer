@@ -21,6 +21,7 @@ import { useAppDispatch } from "../../app/hooks";
 import { setUser } from "../../app/store/user";
 import { Link as RouteLink } from "react-router-dom";
 import DionysLogo from "../../app/layouts/images/DionysLogo10.png";
+import loginBackground from "../../app/layouts/images/login.jpg";
 
 const theme = createTheme();
 
@@ -93,7 +94,7 @@ export default function Login(props: LoginProps) {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: "url(https://source.unsplash.com/random)",
+            backgroundImage: "url(" + loginBackground + ")",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
@@ -121,7 +122,7 @@ export default function Login(props: LoginProps) {
             </RouteLink>
 
             <Typography component="h1" variant="h5">
-              Sign in
+              Đăng nhập
             </Typography>
             <Box
               component="form"
@@ -144,7 +145,7 @@ export default function Login(props: LoginProps) {
               )}
               {renderInput(
                 passwordField,
-                "Password",
+                "Mật khẩu",
                 password,
                 getAllData(),
                 errors,
@@ -155,10 +156,10 @@ export default function Login(props: LoginProps) {
                   type: "password",
                 }
               )}
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <LoadingButton
                 type="submit"
                 fullWidth
@@ -167,7 +168,7 @@ export default function Login(props: LoginProps) {
                 loading={submitLoadding}
                 loadingPosition="end"
               >
-                Sign In
+                Đăng nhập
               </LoadingButton>
               <Grid container>
                 <Grid item xs>
@@ -177,7 +178,7 @@ export default function Login(props: LoginProps) {
                 </Grid>
                 <Grid item>
                   <Link href="/signup" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                    {"Không có tài khoản ? đăng ký ngay"}
                   </Link>
                 </Grid>
               </Grid>

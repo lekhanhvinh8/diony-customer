@@ -10,13 +10,13 @@ import PaymentSelection from "./paymentSelection";
 import OrderArea from "./orderArea";
 import { initializeCheckoutPage } from "../../app/store/ui/checkout";
 import Footer from "../footer/footer";
+import Voucher from "./voucher";
 
 export interface CheckoutProps {}
 
 export default function Checkout(props: CheckoutProps) {
   const dispatch = useDispatch();
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
-  const cartPage = useAppSelector((state) => state.ui.cartPage);
   const pageLoadding = useAppSelector(
     (state) => state.ui.checkoutPage.pageReloading
   );
@@ -26,13 +26,11 @@ export default function Checkout(props: CheckoutProps) {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      await dispatch(
-        initializeCheckoutPage(userAddresses, cartGroups, cartPage)
-      );
+      await dispatch(initializeCheckoutPage(userAddresses, cartGroups));
     };
 
     asyncFunc();
-  }, [dispatch, userAddresses, cartGroups, cartPage]);
+  }, [dispatch, userAddresses, cartGroups]);
 
   return (
     <Box>
@@ -70,6 +68,9 @@ export default function Checkout(props: CheckoutProps) {
           </Box>
           <Box>
             <ItemsCheckout />
+          </Box>
+          <Box>
+            <Voucher />
           </Box>
           <Box>
             <PaymentSelection />

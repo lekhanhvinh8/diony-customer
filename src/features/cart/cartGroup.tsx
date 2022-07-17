@@ -8,55 +8,30 @@ import {
 } from "@mui/material";
 import { Fragment } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  checkCartGroup,
-  checkCartItem,
-  isGroupChecked,
-  isGroupDisabled,
-  removeItemIndex,
-} from "../../app/store/ui/cart";
+// import {
+//   checkCartGroup,
+//   checkCartItem,
+//   isGroupChecked,
+//   isGroupDisabled,
+//   removeItemIndex,
+// } from "../../app/store/ui/cart";
 import { formatMoney } from "../../app/utils/formatMoney";
 import ItemAmount from "./itemAmount";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { removeCart } from "../../app/store/entities/cart";
+import { checkCartGroup, checkCartItem, isGroupChecked, isGroupDisabled, removeCart } from "../../app/store/entities/cart";
 import { Link } from "react-router-dom";
 import StorefrontIcon from "@mui/icons-material/Storefront";
+import { CartGroup as CartGroupModel } from "../../app/models/cart/cartGroup";
 
 export interface CartGroupProps {
-  cartGroupIndex: number;
+  cartGroup: CartGroupModel;
 }
 
-export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
+export default function CartGroup({ cartGroup }: CartGroupProps) {
   const dispatch = useAppDispatch();
-  const cartPage = useAppSelector((state) => state.ui.cartPage);
-  const cartGroups = useAppSelector((state) => state.entities.cartGroups);
-  const isChecked = useAppSelector(isGroupChecked(cartGroupIndex));
-  const isDisabled = useAppSelector(isGroupDisabled(cartGroupIndex));
-
-  const cartGroup = cartGroups[cartGroupIndex];
-
-  const isItemCheckBoxDisabled = (itemIndex: number) => {
-    let isDisabled =
-      cartPage.cartGroupIndexes[cartGroupIndex]?.cartItemIndexes[itemIndex]
-        ?.disabled;
-
-    //bug => must create a isDisabled in store
-    if (cartGroup.items[itemIndex].amount === 0) isDisabled = true;
-
-    if (isDisabled) return true;
-
-    return false;
-  };
-
-  const isItemChecked = (itemIndex: number) => {
-    const isChecked =
-      cartPage.cartGroupIndexes[cartGroupIndex]?.cartItemIndexes[itemIndex]
-        ?.checked;
-
-    if (isChecked) return true;
-
-    return false;
-  };
+  // const cartPage = useAppSelector((state) => state.ui.cartPage);
+  const isChecked = useAppSelector(isGroupChecked(cartGroup.shopInfo.shopId));
+  const isDisabled = useAppSelector(isGroupDisabled(cartGroup.shopInfo.shopId));
 
   return (
     <Fragment>
@@ -70,7 +45,7 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
             disabled={isDisabled}
             checked={isChecked}
             onChange={(e) => {
-              dispatch(checkCartGroup(cartGroupIndex, e.target.checked));
+              dispatch(checkCartGroup(cartGroup.shopInfo.shopId, e.target.checked));
             }}
           />
           <StorefrontIcon sx={{ ml: 2 }} color="error" />
@@ -86,11 +61,11 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
           >
             <Stack direction="row">
               <Checkbox
-                disabled={isItemCheckBoxDisabled(index)}
-                checked={isItemChecked(index)}
+                disabled={item.disabled}
+                checked={item.checked}
                 onChange={(e) => {
                   dispatch(
-                    checkCartItem(cartGroupIndex, index, e.target.checked)
+                    checkCartItem(item.id, e.target.checked)
                   );
                 }}
               />
@@ -153,9 +128,7 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
                 justifyContent="center"
               >
                 <ItemAmount
-                  groupIndex={cartGroupIndex}
-                  itemIndex={index}
-                  amount={item.amount}
+                  cartItem={item}
                 />
               </Box>
               <Box
@@ -187,8 +160,8 @@ export default function CartGroup({ cartGroupIndex }: CartGroupProps) {
             <Box sx={{ height: "100%" }} display="flex" alignItems="center">
               <IconButton
                 onClick={async () => {
-                  await dispatch(removeCart(cartGroupIndex, index));
-                  await dispatch(removeItemIndex(cartGroupIndex, index));
+                  await dispatch(removeCart(item.id));
+                  // await dispatch(removeItemIndex(cartGroupIndex, index));
                 }}
               >
                 <DeleteIcon color="error" />

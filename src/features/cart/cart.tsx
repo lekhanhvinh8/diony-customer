@@ -1,12 +1,13 @@
 import { Box, Checkbox, Grid, Typography } from "@mui/material";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { checkAll, isAllChecked, isAllDisabled } from "../../app/store/ui/cart";
+// import { checkAll, isAllChecked, isAllDisabled } from "../../app/store/ui/cart";
 import ElevationScrollHeader from "../header/elevationHeader";
 import CartGroup from "./cartGroup";
 import OrderArea from "./orderArea";
 import { darkBackgroundColor } from "../../app/layouts/layoutConfig.json";
 import Footer from "../footer/footer";
+import { checkAll, isAllChecked, isAllDisabled } from "../../app/store/entities/cart";
 
 export interface CartProps {}
 
@@ -98,7 +99,7 @@ export default function Cart(props: CartProps) {
 
             {cartGroups.map((cartGroup, index) => (
               <Fragment key={index}>
-                <CartGroup key={index} cartGroupIndex={index} />
+                <CartGroup key={index} cartGroup={cartGroup} />
 
                 <Grid
                   item

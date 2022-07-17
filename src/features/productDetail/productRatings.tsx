@@ -55,7 +55,7 @@ export default function ProductRatings(props: ProductRatingsProps) {
                       sx={{ width: 56, height: 56 }}
                     />
                   </Box>
-                  <Box>
+                  <Box sx={{ marginLeft: 2 }}>
                     <Typography>{rating.customerEmail}</Typography>
                     <Rating value={rating.stars} readOnly />
 

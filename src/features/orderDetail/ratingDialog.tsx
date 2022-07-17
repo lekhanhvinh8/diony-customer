@@ -6,15 +6,11 @@ import {
   DialogActions,
   Button,
   Rating,
-  InputBase,
   Grid,
   Typography,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useNavigate } from "react-router-dom";
 import {
   rate,
   setRatingDialogOpen,
@@ -26,7 +22,6 @@ import { cut } from "../../app/utils/stringCutter";
 export interface RatingDialogProps {}
 
 export default function RatingDialog(props: RatingDialogProps) {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const dialogOpen = useAppSelector(
     (state) => state.ui.orderDetailPage.ratingDialogOpen

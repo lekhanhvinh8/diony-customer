@@ -9,7 +9,6 @@ export interface OrderAreaProps {}
 export default function OrderArea(props: OrderAreaProps) {
   const navigate = useNavigate();
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
-  const cartPage = useAppSelector((state) => state.ui.cartPage);
 
   const discount = 0;
   const getProvisionalPrice = () => {
@@ -22,7 +21,7 @@ export default function OrderArea(props: OrderAreaProps) {
         for (let j = 0; j < cartGroup.items.length; j++) {
           const cartItem = cartGroup.items[j];
 
-          if (cartPage.cartGroupIndexes[i]?.cartItemIndexes[j]?.checked) {
+          if (cartItem.checked) {
             sum += cartItem.amount * cartItem.price;
           }
         }
@@ -33,9 +32,9 @@ export default function OrderArea(props: OrderAreaProps) {
   };
 
   const isButtonDisabled = () => {
-    for (const cartGroupIndex of cartPage.cartGroupIndexes) {
-      for (const cartItemIndex of cartGroupIndex.cartItemIndexes) {
-        if (cartItemIndex.checked) return false;
+    for (const cartGroup of cartGroups) {
+      for (const cartItem of cartGroup.items) {
+        if (cartItem.checked) return false;
       }
     }
 

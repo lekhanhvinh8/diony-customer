@@ -9,4 +9,6 @@ export interface CartGroupItem {
   amount: number;
   combinationName: string | null;
 
+  checked: boolean;
+  disabled: boolean;
 }

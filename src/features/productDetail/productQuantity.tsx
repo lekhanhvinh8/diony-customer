@@ -5,7 +5,7 @@ import {
   Grid,
   InputBase,
   Stack,
-  
+  Typography,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -89,7 +89,11 @@ export default function ProductQuantity(props: ProductQuantityProps) {
               </ButtonGroup>
             </Box>
             <Box display="flex" alignItems="center" sx={{ paddingLeft: 2 }}>
-              {quantity} sản phẩm có sẵn
+              {quantity == 0 ? (
+                <Typography color="error">Sản phẩm hết hàng</Typography>
+              ) : (
+                "" + quantity + " sản phẩm có sẵn"
+              )}
             </Box>
           </Stack>
         </Grid>

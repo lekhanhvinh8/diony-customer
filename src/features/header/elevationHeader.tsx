@@ -6,11 +6,9 @@ import {
   Grid,
   IconButton,
   Link,
-  Toolbar,
   useScrollTrigger,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import DionysLogo from "../../app/layouts/images/DionysLogo10.png";

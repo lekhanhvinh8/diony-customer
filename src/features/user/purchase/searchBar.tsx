@@ -48,7 +48,7 @@ export default function SearchBar(props: SearchBarProps) {
             }
           }}
         />
-        {searchKey != "" && (
+        {searchKey !== "" && (
           <IconButton
             onClick={async () => {
               await dispatch(changeSearchKey(""));

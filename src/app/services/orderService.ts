@@ -4,6 +4,7 @@ import { OrderGroup, OrderItem } from "../store/ui/purchasePage";
 import { getJwt } from "./authService";
 import { OrderDetail } from "../models/orderDetail";
 import { RatingItem } from "../store/ui/orderDetailPage";
+import { Discount } from "../models/discount";
 
 const apiEndpoint = apiUrl + "order/";
 
@@ -35,12 +36,14 @@ export const getShippingCost = async (
 
 export const createCODOrder = async (
   cartIds: Array<number>,
-  addressId: number
+  addressId: number,
+  discountId: number
 ) => {
   const { data } = await http.post(apiEndpoint, {
     cartIDs: cartIds,
     addressId: addressId,
     paymentType: "COD",
+    discountId,
   });
 
   return data;
@@ -48,7 +51,8 @@ export const createCODOrder = async (
 
 export const createPaypalOrder = async (
   cartIds: Array<number>,
-  addressId: number
+  addressId: number,
+  discountId: number
 ) => {
   return fetch(apiEndpoint, {
     method: "post",
@@ -56,7 +60,12 @@ export const createPaypalOrder = async (
       "content-type": "application/json",
       authorization: "bearer " + getJwt(),
     },
-    body: JSON.stringify({ cartIds, addressId, paymentType: "PAYPAL" }),
+    body: JSON.stringify({
+      cartIds,
+      addressId,
+      paymentType: "PAYPAL",
+      discountId,
+    }),
   })
     .then(function (res) {
       return res.json();
@@ -68,7 +77,7 @@ export const createPaypalOrder = async (
 
 export const capturePaypalOrder = async (orderId: number) => {
   //orderId is id of paypal order, it's acctually a string
-   
+
   return fetch(apiEndpoint + "capturePaypalOrder/" + orderId, {
     method: "post",
     headers: {
@@ -104,6 +113,7 @@ export const getAllOrders = async () => {
       shopName: order.shopName,
       total: order.total,
       shippingCost: order.shipFee,
+      shippingCostDiscount: order.shippingCostDiscount,
       items: order.items.map((item: any) => {
         const orderItem: OrderItem = {
           id: item.id,
@@ -150,6 +160,7 @@ export const getFilteredOrders = async (
       shopName: order.shopName,
       total: order.total,
       shippingCost: order.shipFee,
+      shippingCostDiscount: order.shippingCostDiscount,
       items: order.items.map((item: any) => {
         const orderItem: OrderItem = {
           id: item.id,
@@ -208,4 +219,32 @@ export const rate = async (ratingItems: Array<RatingItem>) => {
   }
 
   await http.post(apiEndpoint + "Rating", { ratings: ratings });
+};
+
+export const getVouchers = async () => {
+  const { data: vouchersJson } = await http.get(
+    apiEndpoint + "GetHappenningDiscounts"
+  );
+  const vouchers: Array<Discount> = [];
+
+  for (const voucherJson of vouchersJson) {
+    var voucher: Discount = {
+      id: voucherJson.id,
+      code: voucherJson.code,
+      fromDate: voucherJson.fromDate,
+      toDate: voucherJson.toDate,
+      description: "Discount Description",
+      discountRate: voucherJson.discountRate,
+      minOrderCost: voucherJson.minOrderCost,
+      maxDiscount: voucherJson.maxDiscount,
+      numberOfUsings: voucherJson.numberOfUsings,
+      maxUsings: voucherJson.maxUsings,
+      enabled: voucherJson.enabled,
+      createdDate: voucherJson.createdDate,
+    };
+
+    vouchers.push(voucher);
+  }
+
+  return vouchers;
 };

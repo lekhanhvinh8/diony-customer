@@ -2,8 +2,8 @@ import { Box, Button, ButtonGroup, InputBase } from "@mui/material";
 import { useAppDispatch } from "../../app/hooks";
 
 import { makeStyles } from "@mui/styles";
-import { changeItemAmount } from "../../app/store/entities/cart";
-import { disabledItemIndex, enableItemIndex } from "../../app/store/ui/cart";
+import { changeItemAmount, disableCartItem, enableCartItem } from "../../app/store/entities/cart";
+import { CartGroupItem } from "../../app/models/cart/cartGroupItem";
 
 const useStyles = makeStyles({
   root: {
@@ -19,18 +19,16 @@ const useStyles = makeStyles({
 });
 
 export interface ItemAmountProps {
-  groupIndex: number;
-  itemIndex: number;
-  amount: number;
+  cartItem: CartGroupItem;
 }
 
 export default function ItemAmount({
-  groupIndex,
-  itemIndex,
-  amount,
+  cartItem,
 }: ItemAmountProps) {
   const classes = useStyles();
   const dispatch = useAppDispatch();
+
+  const amount = cartItem.amount;
 
   return (
     <Box className={classes.root}>
@@ -44,9 +42,9 @@ export default function ItemAmount({
           sx={{ width: 30 }}
           onClick={async () => {
             if (amount === 1)
-              await dispatch(disabledItemIndex(groupIndex, itemIndex));
+              await dispatch(disableCartItem(cartItem.id));
 
-            await dispatch(changeItemAmount(groupIndex, itemIndex, amount - 1));
+            await dispatch(changeItemAmount(cartItem, amount - 1));
           }}
         >
           -
@@ -60,11 +58,11 @@ export default function ItemAmount({
             onChange={(e) => {
               const selectedQuantity = Number(e.currentTarget.value);
               dispatch(
-                changeItemAmount(groupIndex, itemIndex, selectedQuantity)
+                changeItemAmount(cartItem, selectedQuantity)
               );
 
               if (amount === 0 && selectedQuantity !== 0)
-                dispatch(enableItemIndex(groupIndex, itemIndex));
+                dispatch(enableCartItem(cartItem.id));
             }}
           />
         </Button>
@@ -72,9 +70,9 @@ export default function ItemAmount({
           sx={{ width: 30 }}
           onClick={async () => {
             if (amount === 0)
-              await dispatch(enableItemIndex(groupIndex, itemIndex));
+              await dispatch(enableCartItem(cartItem.id));
 
-            await dispatch(changeItemAmount(groupIndex, itemIndex, amount + 1));
+            await dispatch(changeItemAmount(cartItem, amount + 1));
           }}
         >
           +

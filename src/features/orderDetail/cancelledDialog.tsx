@@ -16,7 +16,6 @@ import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cancelOrder } from "../../app/services/orderService";
 import { setCancelledDialogOpen } from "../../app/store/ui/orderDetailPage";
-import { reloadOrders } from "../../app/store/ui/purchasePage";
 import { cancelledReasons } from "../../config.json";
 import { useNavigate } from "react-router-dom";
 

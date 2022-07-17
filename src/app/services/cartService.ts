@@ -21,6 +21,8 @@ export const addToCart = async (
       shopId: data.shopId,
       shopName: data.shopName,
     },
+    checked: false,
+    disabled: false,
     items: data.items.map((item: any) => {
       const combinationName = item.variants
         ? item.variants.map((v: any) => v.name + " " + v.value).join(", ")
@@ -35,6 +37,8 @@ export const addToCart = async (
         name: item.name,
         avatarUrl: item.image,
         combinationName: combinationName,
+        checked: false,
+        disabled: false,
       };
 
       return cartItem;
@@ -54,6 +58,8 @@ export const getCart = async () => {
         shopId: group.shopId,
         shopName: group.shopName,
       },
+      checked: false,
+      disabled: false,
       items: group.items.map((item: any) => {
         const combinationName = item.variants
           ? item.variants.map((v: any) => v.name + " " + v.value).join(", ")
@@ -69,6 +75,8 @@ export const getCart = async () => {
           price: item.price,
           amount: item.amount,
           combinationName: combinationName,
+          checked: false,
+          disabled: false,
         };
 
         return cartItem;

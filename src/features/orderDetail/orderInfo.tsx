@@ -1,11 +1,10 @@
-import { Avatar, Box, Grid, Paper, Typography } from "@mui/material";
+import { Avatar, Box,  Paper, Typography } from "@mui/material";
 import { orderStatus } from "../../config.json";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import { format } from "date-fns";

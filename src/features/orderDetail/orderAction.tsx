@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { orderStatus } from "../../config.json";
 import CancelIcon from "@mui/icons-material/Cancel";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { useState } from "react";
 import {
   setCancelledDialogOpen,
   setRatingDialogOpen,

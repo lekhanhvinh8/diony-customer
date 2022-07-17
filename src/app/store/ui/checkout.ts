@@ -3,10 +3,11 @@ import { AppThunk, RootState } from "../store";
 import {
   getExpectedDeliveryTime as getExpectedDeliveryTimeService,
   getShippingCost as getShippingCostService,
+  getVouchers,
 } from "../../services/orderService";
-import { CartPageStore } from "./cart";
 import { CartGroup } from "../../models/cart/cartGroup";
 import { Address } from "../../models/address/address";
+import { Discount } from "../../models/discount";
 
 export interface CheckoutStore {
   selectedAddressId: number | null;
@@ -17,8 +18,11 @@ export interface CheckoutStore {
     time: string | null;
   }>;
   shippingCosts: Array<{ shopId: number; cost: number | null }>;
+  vouchers: Array<Discount>;
   pageReloading: boolean;
   orderLoading: boolean;
+  selectedVoucher: number | null;
+  voucherDialogOpen: boolean;
 }
 
 export const initialCheckoutState: CheckoutStore = {
@@ -27,8 +31,11 @@ export const initialCheckoutState: CheckoutStore = {
   selectedPaymentMethod: "COD",
   expectedDeliveryTimes: [],
   shippingCosts: [],
+  vouchers: [],
   pageReloading: false,
   orderLoading: false,
+  selectedVoucher: null,
+  voucherDialogOpen: false,
 };
 
 const slice = createSlice({
@@ -68,6 +75,12 @@ const slice = createSlice({
     orderLoadingSet: (page, action: PayloadAction<boolean>) => {
       page.orderLoading = action.payload;
     },
+    voucherSelected: (page, action: PayloadAction<number>) => {
+      page.selectedVoucher = action.payload;
+    },
+    voucherDialogSet: (page, action: PayloadAction<boolean>) => {
+      page.voucherDialogOpen = action.payload;
+    },
   },
 });
 
@@ -81,6 +94,8 @@ const {
   deliveryTimeReloadded,
   shippingCostReloadded,
   pageReloadingSet,
+  voucherSelected,
+  voucherDialogSet,
 } = slice.actions;
 
 //selectors
@@ -102,95 +117,88 @@ export const getShippingCost = (shopId: number) =>
 
 //action creators
 export const initializeCheckoutPage =
-  (
-    addresses: Array<Address>,
-    cartGroups: Array<CartGroup>,
-    cartPage: CartPageStore
-  ): AppThunk =>
+  (addresses: Array<Address>, cartGroups: Array<CartGroup>): AppThunk =>
   async (dispatch) => {
-    if (cartGroups.length !== cartPage.cartGroupIndexes.length) return;
-    if (cartGroups.length === 0 || cartPage.cartGroupIndexes.length === 0)
-      return;
+    if (cartGroups.length === 0) return;
     if (addresses.length === 0) return;
 
     try {
       dispatch(pageReloadingSet(true));
 
-    //initialize selected address
-    let selectedAddressId: number | null = null;
+      //initialize selected address
+      let selectedAddressId: number | null = null;
 
-    const defaultAddress = addresses.find((a) => a.isDefault);
+      const defaultAddress = addresses.find((a) => a.isDefault);
 
-    if (defaultAddress) selectedAddressId = defaultAddress.id;
-    else selectedAddressId = addresses[0].id;
+      if (defaultAddress) selectedAddressId = defaultAddress.id;
+      else selectedAddressId = addresses[0].id;
 
-    //initialize deliveryTimes
-    const expectedDeliveryTimes: CheckoutStore["expectedDeliveryTimes"] = [];
+      //initialize deliveryTimes
+      const expectedDeliveryTimes: CheckoutStore["expectedDeliveryTimes"] = [];
 
-    for (const group of cartGroups) {
-      let expectedDeliveryTime = null;
+      for (const group of cartGroups) {
+        let expectedDeliveryTime = null;
 
-      const groupIndex = cartGroups.findIndex((g) => g === group);
-      const hasAnyItemChecked = cartPage.cartGroupIndexes[
-        groupIndex
-      ].cartItemIndexes
-        .map((i) => i.checked)
-        .includes(true);
+        const hasAnyItemChecked = group.items
+          .map((i) => i.checked)
+          .includes(true);
 
-      if (selectedAddressId && hasAnyItemChecked) {
-        expectedDeliveryTime = await getExpectedDeliveryTimeService(
-          selectedAddressId,
-          group.shopInfo.shopId
-        );
+        if (selectedAddressId && hasAnyItemChecked) {
+          expectedDeliveryTime = await getExpectedDeliveryTimeService(
+            selectedAddressId,
+            group.shopInfo.shopId
+          );
+        }
+
+        expectedDeliveryTimes.push({
+          shopId: group.shopInfo.shopId,
+          time: expectedDeliveryTime,
+        });
       }
 
-      expectedDeliveryTimes.push({
-        shopId: group.shopInfo.shopId,
-        time: expectedDeliveryTime,
-      });
-    }
+      //initialize shippingCost;
+      const shippingCosts: CheckoutStore["shippingCosts"] = [];
+      for (const group of cartGroups) {
+        let shippingCost = null;
 
-    //initialize shippingCost;
-    const shippingCosts: CheckoutStore["shippingCosts"] = [];
-    for (const group of cartGroups) {
-      let shippingCost = null;
+        const hasAnyItemChecked = group.items
+          .map((i) => i.checked)
+          .includes(true);
 
-      const groupIndex = cartGroups.findIndex((c) => c === group);
-      const itemIndexes = cartPage.cartGroupIndexes[groupIndex].cartItemIndexes;
-      const hasAnyItemChecked = itemIndexes
-        .map((i) => i.checked)
-        .includes(true);
+        if (selectedAddressId && hasAnyItemChecked) {
+          const cartIds = group.items.filter((i) => i.checked).map((i) => i.id);
 
-      if (selectedAddressId && hasAnyItemChecked) {
-        const cartIds = group.items
-          .map((i) => i.id)
-          .filter((item, index) => itemIndexes[index].checked);
+          shippingCost = await getShippingCostService(
+            cartIds,
+            selectedAddressId
+          );
+        }
 
-        shippingCost = await getShippingCostService(cartIds, selectedAddressId);
+        shippingCosts.push({
+          shopId: group.shopInfo.shopId,
+          cost: shippingCost,
+        });
       }
 
-      shippingCosts.push({
-        shopId: group.shopInfo.shopId,
-        cost: shippingCost,
-      });
-    }
+      const vouchers = await getVouchers();
 
-    const checkoutState: CheckoutStore = {
-      selectedAddressId: selectedAddressId,
-      tempSelectedAddressId: selectedAddressId,
-      selectedPaymentMethod: "COD",
-      expectedDeliveryTimes: expectedDeliveryTimes,
-      shippingCosts: shippingCosts,
-      pageReloading: false,
-      orderLoading: false,
-    };
+      const checkoutState: CheckoutStore = {
+        selectedAddressId: selectedAddressId,
+        tempSelectedAddressId: selectedAddressId,
+        selectedPaymentMethod: "COD",
+        expectedDeliveryTimes: expectedDeliveryTimes,
+        shippingCosts: shippingCosts,
+        vouchers: vouchers,
+        pageReloading: false,
+        orderLoading: false,
+        selectedVoucher: null,
+        voucherDialogOpen: false,
+      };
 
-    dispatch(pageInitialized(checkoutState));
-    dispatch(pageReloadingSet(false));
-
+      dispatch(pageInitialized(checkoutState));
+      dispatch(pageReloadingSet(false));
     } catch (error) {
       dispatch(pageReloadingSet(false));
-      
     }
   };
 
@@ -212,15 +220,20 @@ export const selectPaymentMethod =
     dispatch(paymentMethodSelected(paymentMethod));
   };
 
+export const selectVoucher =
+  (voucherId: number): AppThunk =>
+  (dispatch) => {
+    dispatch(voucherSelected(voucherId));
+  };
+
 export const reloadShippingCostsAndExpectedDeliveryTimes =
   (addressId: number | null): AppThunk =>
   async (dispatch, getState) => {
-    const cartGroups = getState().entities.cartGroups;
-    const cartPage = getState().ui.cartPage;
+    const cartGroups = getState().entities.cartGroups.filter((cartGroup) =>
+      cartGroup.items.some((item) => item.checked)
+    );
 
-    if (cartGroups.length !== cartPage.cartGroupIndexes.length) return;
-    if (cartGroups.length === 0 || cartPage.cartGroupIndexes.length === 0)
-      return;
+    if (cartGroups.length === 0) return;
     if (addressId === null) return;
 
     try {
@@ -245,14 +258,10 @@ export const reloadShippingCostsAndExpectedDeliveryTimes =
       //initialize shippingCost;
       const shippingCosts: CheckoutStore["shippingCosts"] = [];
       for (const group of cartGroups) {
-        const groupIndex = cartGroups.findIndex((c) => c === group);
-        const itemIndexes =
-          cartPage.cartGroupIndexes[groupIndex].cartItemIndexes;
-
         let shippingCost = null;
         const cartIds = group.items
-          .map((i) => i.id)
-          .filter((item, index) => itemIndexes[index].checked);
+          .filter((item) => item.checked)
+          .map((i) => i.id);
 
         shippingCost = await getShippingCostService(cartIds, addressId);
 
@@ -276,4 +285,10 @@ export const setOrderLoading =
   (isLoading: boolean): AppThunk =>
   async (dispatch) => {
     dispatch(pageReloadingSet(isLoading));
+  };
+
+export const setVoucherDialog =
+  (open: boolean): AppThunk =>
+  async (dispatch) => {
+    dispatch(voucherDialogSet(open));
   };

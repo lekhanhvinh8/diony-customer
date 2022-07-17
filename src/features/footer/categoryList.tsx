@@ -1,4 +1,4 @@
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Cell } from "./footerCategories";
 
 export interface CategoryListProps {

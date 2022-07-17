@@ -73,7 +73,11 @@ export default function OrderGroup({ order }: OrderGroupProps) {
             color="red"
             sx={{ ml: 1 }}
           >
-            {formatMoney(order.total + order.shippingCost) + "đ"}
+            {formatMoney(
+              Math.round(
+                order.total + order.shippingCost - order.shippingCostDiscount
+              )
+            ) + "đ"}
           </Typography>
         </Box>
         <Box sx={{ mt: 2 }}>

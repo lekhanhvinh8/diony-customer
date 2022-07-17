@@ -49,28 +49,38 @@ export default function Purchase(props: PurchaseProps) {
             await dispatch(reloadOrders());
           }}
         >
-          <Tab label={orderStatus.all.label} value={orderStatus.all.tabName} />
           <Tab
+            style={{ fontWeight: "bold" }}
+            label={orderStatus.all.label}
+            value={orderStatus.all.tabName}
+          />
+          <Tab
+            style={{ fontWeight: "bold" }}
             label={orderStatus.pending.label}
             value={orderStatus.pending.tabName}
           />
           <Tab
+            style={{ fontWeight: "bold" }}
             label={orderStatus.toPrepare.label}
             value={orderStatus.toPrepare.tabName}
           />
           <Tab
+            style={{ fontWeight: "bold" }}
             label={orderStatus.toPickup.label}
             value={orderStatus.toPickup.tabName}
           />
           <Tab
+            style={{ fontWeight: "bold" }}
             label={orderStatus.shipping.label}
             value={orderStatus.shipping.tabName}
           />
           <Tab
+            style={{ fontWeight: "bold" }}
             label={orderStatus.shipped.label}
             value={orderStatus.shipped.tabName}
           />
           <Tab
+            style={{ fontWeight: "bold" }}
             label={orderStatus.cancelled.label}
             value={orderStatus.cancelled.tabName}
           />

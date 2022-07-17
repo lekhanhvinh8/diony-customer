@@ -1,10 +1,9 @@
 import { Box, Grid } from "@mui/material";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import OrderHistory from "./orderHistory";
 import OrderInfo from "./orderInfo";
 import { useParams } from "react-router-dom";
-import { orderIdParams, productIdRouteParams } from "../../app/layouts/App";
+import { orderIdParams } from "../../app/layouts/App";
 import { useAppDispatch } from "../../app/hooks";
 import { reloadOrderDetail } from "../../app/store/ui/orderDetailPage";
 import OrderAction from "./orderAction";

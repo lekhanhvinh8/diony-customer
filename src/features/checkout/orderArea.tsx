@@ -6,8 +6,7 @@ import { createCODOrder } from "../../app/services/orderService";
 import { formatMoney } from "../../app/utils/formatMoney";
 import PaypalButton from "./paypalButton";
 import { useNavigate } from "react-router";
-import { clearCartGroups } from "../../app/store/entities/cart";
-import { clearCartPage } from "../../app/store/ui/cart";
+import { clearCarts } from "../../app/store/entities/cart";
 import { setOrderLoading } from "../../app/store/ui/checkout";
 
 export interface OrderAreaProps {}
@@ -16,7 +15,6 @@ export default function OrderArea(props: OrderAreaProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const cartGroups = useAppSelector((state) => state.entities.cartGroups);
-  const cartPage = useAppSelector((state) => state.ui.cartPage);
   const selectedAddressId = useAppSelector(
     (state) => state.ui.checkoutPage.selectedAddressId
   );
@@ -29,13 +27,16 @@ export default function OrderArea(props: OrderAreaProps) {
   const paymentMethod = useAppSelector(
     (state) => state.ui.checkoutPage.selectedPaymentMethod
   );
+  const selectedVoucherId = useAppSelector(
+    (state) => state.ui.checkoutPage.selectedVoucher
+  );
+  const vouchers = useAppSelector((state) => state.ui.checkoutPage.vouchers);
 
   const hasAnyItems = () => {
     let flag = false;
 
-    for (const groupIndex of cartPage.cartGroupIndexes) {
-      if (groupIndex.cartItemIndexes.map((i) => i.checked).includes(true))
-        flag = true;
+    for (const cartGroup of cartGroups) {
+      if (cartGroup.items.map((i) => i.checked).includes(true)) flag = true;
     }
 
     return flag;
@@ -60,19 +61,15 @@ export default function OrderArea(props: OrderAreaProps) {
   const getTotalItemPrices = () => {
     let sum = 0;
 
-    if (cartGroups.length !== cartPage.cartGroupIndexes.length) return sum;
-
-    for (let i = 0; i < cartPage.cartGroupIndexes.length; i++) {
-      const groupIndex = cartPage.cartGroupIndexes[i];
+    for (let i = 0; i < cartGroups.length; i++) {
       const cartGroup = cartGroups[i];
 
       if (cartGroup) {
         let totalGroupPrice = 0;
-        for (let j = 0; j < groupIndex.cartItemIndexes.length; j++) {
-          const itemIndex = groupIndex.cartItemIndexes[j];
+        for (let j = 0; j < cartGroup.items.length; j++) {
           const item = cartGroup.items[j];
 
-          if (itemIndex.checked && item) {
+          if (item.checked) {
             totalGroupPrice += item.price * item.amount;
           }
         }
@@ -84,14 +81,30 @@ export default function OrderArea(props: OrderAreaProps) {
     return sum;
   };
 
+  const getDiscount = () => {
+    let discount = 0;
+    if (selectedVoucherId) {
+      const voucher = vouchers.find((v) => v.id === selectedVoucherId);
+      if (voucher) {
+        discount = Math.round(
+          (getTotalShippingCosts() * voucher.discountRate) / 100
+        );
+        if (discount > voucher.maxDiscount) {
+          discount = Math.round(voucher.maxDiscount);
+        }
+      }
+    }
+
+    return discount;
+  };
+
   let cartItemIds: Array<number> = [];
-  for (let i = 0; i < cartPage.cartGroupIndexes.length; i++) {
-    const groupIndex = cartPage.cartGroupIndexes[i];
+  for (let i = 0; i < cartGroups.length; i++) {
     const group = cartGroups[i];
 
-    for (let j = 0; j < groupIndex.cartItemIndexes.length; j++) {
-      const itemIndex = groupIndex.cartItemIndexes[j];
-      if (itemIndex.checked) cartItemIds.push(group.items[j].id);
+    for (let j = 0; j < group.items.length; j++) {
+      const item = group.items[j];
+      if (item.checked) cartItemIds.push(item.id);
     }
   }
 
@@ -123,6 +136,17 @@ export default function OrderArea(props: OrderAreaProps) {
           </Grid>
 
           <Grid item xs={10}>
+            <Typography display="flex" justifyContent="right">
+              Giảm giá:
+            </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography display="flex" justifyContent="right">
+              {formatMoney(getDiscount()) + "₫"}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={10}>
             <Typography
               display="flex"
               justifyContent="right"
@@ -135,8 +159,9 @@ export default function OrderArea(props: OrderAreaProps) {
           <Grid item xs={2}>
             <Box display="flex" justifyContent="right" alignItems="center">
               <Typography fontSize={30} color="red">
-                {formatMoney(getTotalShippingCosts() + getTotalItemPrices()) +
-                  "₫"}
+                {formatMoney(
+                  getTotalShippingCosts() + getTotalItemPrices() - getDiscount()
+                ) + "₫"}
               </Typography>
             </Box>
           </Grid>
@@ -159,11 +184,14 @@ export default function OrderArea(props: OrderAreaProps) {
                 if (selectedAddressId && cartItemIds.length !== 0) {
                   dispatch(setOrderLoading(true));
 
-                  await createCODOrder(cartItemIds, selectedAddressId);
+                  await createCODOrder(
+                    cartItemIds,
+                    selectedAddressId,
+                    selectedVoucherId || 0
+                  );
 
                   dispatch(setOrderLoading(false));
-                  dispatch(clearCartPage);
-                  dispatch(clearCartGroups);
+                  dispatch(clearCarts(cartItemIds));
                   toast.success("Đặt hàng thành công !!!");
                   navigate("/user/purchase");
                 }
@@ -180,6 +208,7 @@ export default function OrderArea(props: OrderAreaProps) {
             <PaypalButton
               cartItemIds={cartItemIds}
               selectedAddressId={selectedAddressId}
+              voucherId={selectedVoucherId || 0}
             />
           </div>
         )}
